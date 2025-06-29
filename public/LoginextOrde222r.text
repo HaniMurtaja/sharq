@@ -1,0 +1,2 @@
+-----------------
+{"pickup_lat":12.345678,"pickup_lng":98.765432,"pickup_id":18,"client_order_id":"1234","value":100.5,"payment_type":1,"lat":12.345678,"lng":98.765432,"address":"123 Main St","city":null,"customer_phone":"566378232","details":"Please deliver by 3 PM","pickup_poa":true,"dropoff_poa":false,"ingr_shop_id":456,"ingr_shop_name":"Shop Name","ingr_branch_id":789,"ingr_branch_name":"Branch Name","ingr_branch_lat":12.345678,"ingr_branch_lng":98.765432,"ingr_branch_phone":"0123456789"}

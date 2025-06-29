@@ -1,0 +1,21 @@
+.dt-layout-row:last-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px
+}
+.dt-layout-row:last-child .dt-info {
+  font-size: 11.2px;
+  color: #585858
+}
+@media (max-width:500px) {
+  #logClientDetails .modal-content {
+    width: 320px
+  }
+  .dt-layout-row:last-child {
+    flex-direction: column;
+    align-items: start;
+    margin-top: 16px;
+    gap: 16px;
+  }
+}

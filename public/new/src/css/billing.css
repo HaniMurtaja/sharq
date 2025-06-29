@@ -1,0 +1,90 @@
+
+#cod-billings-table td:nth-child(2) {
+    text-align: start!important;
+    padding-left: 0 !important;
+  }
+  #cod-billings-table td:nth-child(1) {
+      display: flex;
+          justify-content: end;
+    }
+  #cod-billings-table th {
+    text-align: center
+  }
+  #cod-billings-table th:nth-child(2) {
+      text-align: center;
+  }
+  textarea {
+    height: 64px
+  }
+  .dt-layout-row:last-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px
+  }
+  .dt-layout-row:last-child .dt-info {
+    font-size: 11.2px;
+    color: #585858
+  }
+  .dt-layout-table #operator-billings-table td:first-child {
+    display: flex;
+    justify-content: end
+  }
+  .dt-layout-table #operator-billings-table td:nth-child(2) {
+    text-align: start;
+    padding-left: 0
+  }
+  .dt-layout-table {
+    height: 380px
+  }
+  .exportBtn {
+    right: 365px;
+    top: 9px
+  }
+  .dt-layout-table th {
+      padding: 22.4px 8px !important;
+  }
+  .text-slide-wrapper {
+      width: 80px;
+  }
+  .form-check-input:checked {
+      background-color: #fff !important;
+      border-color: #F5505A !important;
+      border-width: 1px;
+      position: relative;
+      border-radius: 50%;
+      width: 15px;height: 15px;
+  }
+  .form-check-input:checked[type=radio] {
+      --bs-form-check-bg-image: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e);
+  }
+  .form-check-input:checked:before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 49.99999%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      background-color: #F5505A;
+      border-radius: 50%;
+  }
+
+  @media (max-width: 992px) {
+      .position-absolute.billingText{
+          position: relative !important;
+          top: unset;
+      }
+      .position-absolute.exportBtn{
+          position: relative !important;
+      top: unset;
+      right: unset;
+      margin: 5px 0 16px 0;
+      }
+      .dt-layout-row:last-child {
+          align-items: start;
+          flex-direction: column;
+      }
+  }
+

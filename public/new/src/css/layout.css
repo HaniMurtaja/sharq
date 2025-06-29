@@ -1,0 +1,352 @@
+.p-192 {
+  padding: 19.2px
+}
+.pxy-96{
+  padding: 9.6px !important
+}
+.py-96px{
+  padding: 9.6px 0
+}
+.p-112 {
+  padding: 11.2px
+}
+.px-192 {
+  padding-left: 19.2px;
+  padding-right: 19.2px
+}
+.p-128 {
+  padding: 12.8px
+}
+.px-128 {
+  padding: 0 12.8px ;
+}
+.pxy-84 {
+  padding: 8px 4px
+}
+.pxy-1288 {
+  padding: 12.8px 8px
+}
+.pxy-828 {
+  padding: 8px 28px
+}
+.pxy-96128 {
+  padding: 9.6px 12.8px
+}
+.pxy-256 {
+  padding: 25.6px
+}
+.p-9228{
+  padding: 9.2px 28px
+}
+.py-12px {
+  padding: 12px 0
+}
+.fs-192 {
+  font-size: 19.2px
+}
+.fs-96 {
+  font-size: 9.6px!important
+}
+.fs-112 {
+  font-size: 11.2px !important
+}
+.fs-128 {
+  font-size: 12.8px
+}
+.fs-8px {
+  font-size: 8px
+}
+.gray-94 {
+  color: #949494 !important
+}
+.gray-b4{
+  color: #b4b4b4
+}
+.gray-1a {
+  color: #1a1a1a
+}
+.bg-gray-f9 {
+  background-color: #f9f9f9
+}
+.black-58 {
+  color: #585858
+}
+.black-1a {
+  color: #1a1a1a !important
+}
+.br-96 {
+  border-radius: 9.6px !important
+}
+.br-64 {
+  border-radius: 6.4px!important
+}
+.br-128 {
+  border-radius: 12.8px
+}
+.br-8px {
+  border-radius: 8px
+}
+.gap-192 {
+  gap: 19.2px
+}
+.gap-128 {
+  gap: 12.8px
+}
+.mb-176 {
+  margin-bottom: 17.6px
+}
+.mb-192{
+  margin-bottom: 19.2px;
+}
+.mt-192{
+  margin-top: 19.2px;
+}
+.border-ce {
+  border: solid .8px #cecece
+}
+.border-b4 {
+  border: .8px solid #b4b4b4
+}
+.dt-search {
+  display: flex;
+  justify-content: end;
+  align-items: center
+}
+.dt-container .dt-search label {
+  display: none
+}
+input.dt-input[type=search] {
+  position: relative;
+  float: right;
+  border-radius: 9.6px!important;
+  border: solid #cecece .4px;
+  padding-right: 30px;
+  outline: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.58268 17.4998C13.9549 17.4998 17.4993 13.9554 17.4993 9.58317C17.4993 5.21092 13.9549 1.6665 9.58268 1.6665C5.21043 1.6665 1.66602 5.21092 1.66602 9.58317C1.66602 13.9554 5.21043 17.4998 9.58268 17.4998Z' stroke='%23949494' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18.3327 18.3332L16.666 16.6665' stroke='%23949494' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 95% center;
+  background-size: 16px;
+  font-size: 9.6px;
+  width: 355px;
+  padding: 9.6px 12.8px!important;
+  font-weight: 600;
+  color: #585858!important;
+  height: 32.8px!important
+}
+.dt-layout-table {
+  border: 1px solid #cecece!important;
+  border-radius: 9.6px;
+  overflow: scroll;
+  scrollbar-width: none
+}
+.dt-layout-table th {
+  font-size: 11.2px;
+  font-weight: 600;
+  color: #949494;
+  text-align: center !important;
+}
+.dt-layout-table td {
+  padding: 16px 12px;
+  text-align: center;
+  font-size: 11.2px;
+  color: #585858;
+  font-weight: 600
+}
+.obj-position-center {
+  object-position: center
+}
+.dt-container .dt-paging .dt-paging-button {
+  color: #000;
+  font-size: 12.8px;
+  padding: 0;
+  width: 26px;
+  height: 26px;
+  border-color: #a30133;
+  background: 0 0;
+  font-weight: 600;
+  margin: 0;
+  margin-right: 7px
+}
+.modal-content {
+  padding: 25.6px;
+  border-radius: 19.2px!important
+}
+.modal:not(.show) {
+  display: none
+}
+.modal.show {
+  opacity: 1!important
+}
+.sectionTitle {
+  font-size: 11.2px;
+  color: #949494;
+  margin: 0;
+  padding: 0;
+  font-weight: 700
+}
+.gray-c8 {
+  color: #c8c8c8
+}
+.mb-96 {
+  margin-bottom: 9.6px
+}
+textarea {
+  resize: none!important;
+  overflow: auto;
+  scrollbar-width: none
+}
+textarea::-webkit-scrollbar {
+  display: none
+}
+input[type=number] {
+  -moz-appearance: textfield
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0
+}
+.text-slide-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 65px;
+  position: relative;
+  font-weight: 600;
+  font-size: 12.8px;
+  background-color: #fff;
+  color: #585858;
+  text-align: start;
+  margin-bottom: 3px
+}
+.text-slide {
+  display: inline-block;
+  position: relative
+}
+.text-slide-wrapper:hover .text-slide {
+  animation: textSlide 3s ease-in-out forwards
+}
+.white-space-no {
+  white-space: nowrap
+}
+.red-color {
+  color: #a30133 !important;
+}
+.bg-red-a3{
+  background-color: #a30133 !important;
+}
+.greenColor {
+  color: #22ad2f
+}
+table thead{
+    border-bottom: .8px solid #dfdfdf;
+}
+table tbody tr{
+    border-bottom: .8px solid #dfdfdf;
+}
+table tbody tr:last-child{
+    border-bottom: none;
+}
+.h-348{
+  height: 34.8px;
+}
+.wh-32{
+    height: 32px;
+    width: 32px;
+}
+.h-fit-content
+{
+  height: fit-content;
+}
+.select2-container--default .select2-selection--single .select2-selection__clear{
+  height: 18px !important;
+}
+.brightness-50 {
+  filter: brightness(0.5);
+}
+.h-500px{
+  height: 500px
+}
+.modalSelectBox input {
+    border: .8px solid #b1b1b1;
+    border-left: none;
+    border-radius: 0 9.6px 9.6px 0;
+    outline: 0;
+    padding: 0 8px;
+    font-size: 11.2px;
+    width: 100%;
+}
+
+.mainContent .modalSelectBox .select2-container .select2-selection--multiple, .mainContent .modalSelectBox.phoneNewBranch .select2-container .select2-selection--single {
+    border-radius: 9.6px 0 0 9.6px !important;
+    height: 35.28px !important;
+}
+
+.modalSelectBox.modalSelectBox.phoneNewBranch .select2-container {
+    width: fit-content !important;
+}
+.pb-192{
+    padding-bottom: 19.2px;
+}
+.left-24px{
+    left: 24px
+}
+.fs-896px{
+    font-size: 8.96px !important;
+}
+.mt-96px{
+    margin-top: 9.6px
+}
+.invert-1{
+    filter: invert(1);
+}
+.object-contain{
+  object-fit: contain
+}
+.dashed-border {
+  border-style: dashed !important;
+}
+.roundCheckbox {
+  position: relative;
+}
+
+.roundCheckbox label {
+  background-color: #fff;
+  border: 1px solid #b17878;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 28px;
+  left: 0;
+  position: absolute;
+  top: -6;
+  width: 28px;
+  margin: 0;
+}
+
+.roundCheckbox label:after {
+  border: 2px solid #fff;
+  border-top: none;
+  border-right: none;
+  content: "";
+  height: 6px;
+  left: 7px;
+  opacity: 1;
+  position: absolute;
+  top: 8px;
+  transform: rotate(-45deg);
+  width: 12px;
+}
+
+.roundCheckbox input[type="checkbox"] {
+  visibility: hidden;
+}
+
+.roundCheckbox input[type="checkbox"]:checked + label {
+  background-color: #66bb6a;
+  border-color: #66bb6a;
+}
+
+.roundCheckbox input[type="checkbox"]:checked + label:after {
+  opacity: 1;
+}
+
+

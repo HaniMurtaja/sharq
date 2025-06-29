@@ -1,0 +1,1933 @@
+#pac-input {
+    position: absolute;
+    right: 53px;
+    height: 40px;
+    background-color: #fff !important;
+    border-radius: 0 !important;
+    padding: 10px !important;
+    width: 250px !important;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    left: unset !important;
+    border-radius: .3rem !important;
+}
+
+.gm-fullscreen-control {
+    border-radius: .3rem !important;
+}
+
+
+
+.stepwizard-step p {
+    margin-top: 10px;
+}
+
+.stepwizard-row {
+    display: table-row;
+}
+
+.stepwizard {
+    display: table;
+    width: 100%;
+    position: relative;
+}
+
+.stepwizard-step button[disabled] {
+    opacity: 1 !important;
+    filter: alpha(opacity=100) !important;
+}
+
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-order: 0;
+}
+
+.stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+
+
+.modal-backdrop {
+    z-index: 1040;
+    /* Default Bootstrap backdrop z-index */
+}
+
+.modal {
+    z-index: 1050;
+    /* Default Bootstrap modal z-index */
+}
+
+#drawer-overlay {
+    z-index: 1050;
+    /* Behind the drawer but above other elements */
+    position: fixed;
+    inset: 0;
+    /* Full screen */
+    background: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent overlay */
+    display: none;
+    /* Initially hidden */
+}
+
+#drawer {
+    z-index: 1060;
+    /* Higher than the modal */
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    /* width: 1000px; */
+    /* Adjust width as needed */
+    background: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    /* Optional shadow */
+    transform: translateX(100%);
+    /* Initially off-screen */
+    transition: transform 0.3s ease-in-out;
+    /* Smooth open/close */
+}
+
+.onDemondContainer {
+    padding: 19.2px;
+    padding-bottom: 0;
+    direction: rtl;
+}
+
+.onDemondFormContainer {
+    direction: ltr;
+}
+
+.onDemondContainer input,
+.onDemondContainer select {
+    border-radius: 9.6px !important;
+    padding: 12px 24px;
+    height: 48px;
+
+}
+
+.onDemondContainer::-webkit-scrollbar {
+    width: 12px;
+}
+
+.onDemondContainer #regForm button {
+    border: none;
+    font-size: 11.2px !important;
+    color: #fff;
+    padding: 4px 28.8px !important;
+    border-radius: 9.6px;
+}
+
+
+@media (max-width: 992px) {
+    #drawer {
+        z-index: 10000;
+        width: 80%;
+    }
+
+}
+
+@media (max-width: 540px) {
+
+    #drawer {
+        width: 92%;
+        padding-right: 0 !important;
+    }
+
+    .onDemondFormContainer {
+        padding: 0 !important;
+    }
+
+    #pac-input {
+        width: auto !important;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+.toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1055;
+}
+
+.toast {
+    display: none;
+    /* Hidden by default */
+    max-width: 350px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0.25rem;
+    background-color: #fff;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.toast-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.toast-body {
+    font-size: 0.875rem;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: #000;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.btn-close:hover {
+    opacity: 0.75;
+}
+
+.dispatcher-tab-content {
+    overflow-y: scroll;
+    height: 73vh;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.dispatcher-tab-content::-webkit-scrollbar {
+    display: none;
+}
+
+.loader {
+    display: none;
+    /* Initially hidden */
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    z-index: 99999999;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.8);
+    /* Optional light background overlay */
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.overlay {
+    display: none;
+    /* Initially hidden */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Dimmed background effect */
+    z-index: 9999999;
+}
+
+.show {
+    display: block !important;
+    /* To show loader and overlay */
+}
+
+
+
+
+/* popup styles */
+
+
+
+.mainPopup {
+    padding: 16px;
+    border-radius: 12.8px;
+    border-radius: 12.8px !important;
+    position: fixed !important;
+    transform: translate(17%, -104%);
+    width: 45% !important;
+}
+
+.mainPopup .mainCloseBtn {
+    position: absolute;
+    top: -30px;
+    right: 1px;
+    background-color: #00000099;
+    border-radius: 6.4px;
+    padding: 3.12px;
+}
+
+.mainPopup .mainCloseBtn svg path {
+    fill: white;
+    stroke: #fff;
+}
+
+
+.mainPopup .driver-metadata {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #D9D9D9;
+    justify-content: space-between;
+    padding: 0 8px;
+    font-size: 11.2px;
+}
+
+.mainPopup .driverNamePhone {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mainPopup .driverNamePhone .driverImageWrapper {
+    width: 20px;
+    height: 20px;
+}
+
+.mainPopup .driverNamePhone .driverImageWrapper img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.mainPopup .driverNamePhone .driverData .driverName {
+    color: #585858;
+    font-size: 12.8px;
+    margin: 0;
+    font-weight: 400;
+    width: 120px;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    cursor: grab;
+    user-select: none;
+
+}
+
+.mainPopup .driverNamePhone .driverData .driverName:active {
+    cursor: grabbing;
+    /* Change cursor to grabbing while dragging */
+}
+
+.mainPopup .driverNamePhone .driverData .driverName::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar for Chrome, Safari, and Edge */
+}
+
+
+
+
+
+.mainPopup .driverNamePhone .driverData .driverPhone {
+    color: #949494;
+    font-size: 9.6px;
+    margin: 0;
+    font-weight: 400;
+}
+
+.mainPopup .driverCar {
+    width: 23px;
+    height: 29.9px;
+}
+
+.mainPopup .driverCar svg {
+    width: 100%;
+    height: 100%;
+}
+
+.mainPopup .driverImageData {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0px 15px 00px 0;
+    border-right: 1px solid #D9D9D9;
+}
+
+
+.mainPopup .icons {
+    display: flex;
+    align-items: center;
+}
+
+.mainPopup .icons .icon {
+    padding: 0px 9.6px;
+}
+
+.mainPopup .icons svg {
+    width: 19.2px;
+    height: 19.2px;
+}
+
+.mainPopup .icons .icon:first-child {
+    border-right: 1px solid #D9D9D9;
+}
+
+.mainPopup .icons .icon:nth-child(2) {
+    border-right: 1px solid #D9D9D9;
+}
+
+/* Timeline container */
+.mainPopup .stepper-wrapper {
+    cursor: grab;
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    /* margin-bottom: 8px; */
+    width: 100%;
+    /* Set the width of the container */
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    user-select: none;
+    padding: 8px;
+    border-bottom: 1px solid #D9D9D9;
+    scrollbar-width: none;
+}
+
+.mainPopup .stepper-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    flex: 0 0 auto;
+    /* Ensure each item does not stretch */
+    width: 150px;
+    transition: all 1s ease;
+
+    @media (max-width: 768px) {
+        font-size: 12px;
+    }
+}
+
+.mainPopup .stepper-wrapper::-webkit-scrollbar {
+    display: none !important;
+
+}
+
+.mainPopup .stepper-item::before {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #ccc;
+    width: 50%;
+    top: 10px;
+    left: -50%;
+    z-index: 2;
+}
+
+.mainPopup .stepper-item::after {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #ccc;
+    width: 50%;
+    top: 10px;
+    left: 0%;
+    z-index: 2;
+}
+
+.mainPopup .stepper-item .step-counter {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-bottom: 6px;
+}
+
+.mainPopup .step-counter svg {
+    width: 10px;
+}
+
+.mainPopup .stepper-item.active {
+    font-weight: bold;
+}
+
+.mainPopup .stepper-item .step-counter {
+    border: 1px solid #4bb543;
+    background-color: #fff;
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+}
+
+.mainPopup .stepper-item.completed::after {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #4bb543;
+    width: 100%;
+    top: 10px;
+    left: 0;
+    z-index: 3;
+}
+
+.mainPopup .stepper-item:first-child::before {
+    content: none;
+}
+
+.mainPopup .stepper-item:last-child::after {
+    content: none;
+}
+
+.mainPopup .step-name {
+    display: flex;
+    flex-direction: column;
+    font-size: 9.6px;
+    color: #585858;
+
+}
+
+.mainPopup .step-name p {
+    margin: 0;
+}
+
+.mainPopup .step-name p:nth-child(2) {
+    font-size: 8px;
+    color: #949494;
+}
+
+.mainPopup .step-name p:nth-child(2) span:last-child {
+    font-size: 8px;
+    color: #4bb543;
+}
+
+
+/* Collapse Container */
+.mainPopup .collapse-container {
+    padding: 8px 8px 0 8px;
+}
+
+.mainPopup .collapse-tab {
+    padding: 8px 12.8px;
+    border: 1px solid #D9D9D9;
+    border-radius: .8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+}
+
+.mainPopup .collapse-tab:hover {
+    text-decoration: none;
+}
+
+.mainPopup .collapseIcon {
+    width: 19.2px;
+    position: relative;
+    top: -3px;
+}
+
+.mainPopup .collapseIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.mainPopup .collapseNameIcon h4 {
+    font-size: 12.8px;
+    color: #3a3a3a;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.mainPopup .collapseNameIcon {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.mainPopup .collapseBadge {
+    font-size: 9.6px;
+    color: #22ad2f;
+    padding: .3rem 1.2rem;
+    background-color: #e6f5e6;
+    border-radius: .8rem;
+}
+
+.mainPopup .editIcon {
+    width: 16px;
+    position: relative;
+    top: -3px;
+
+}
+
+.mainPopup .editIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.mainPopup .collapseArrowsBadges {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 8px;
+}
+
+.mainPopup .collapse-tab:not(.collapsed) .downarrow svg {
+    transform: rotate(180deg);
+}
+
+.mainPopup .collapse-tab:not(.collapsed) {
+    border-radius: 8px 8px 0 0;
+    /* border-bottom: none; */
+}
+
+.mainPopup .collapse-container .card {
+    border-radius: 0 0 8px 8px !important;
+    gap: 0 !important;
+}
+
+#collapseFirst {
+    border-radius: 0;
+}
+
+/* Card Style */
+.mainPopup .driverDetails {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 8px 0;
+    gap: 1rem;
+}
+
+.mainPopup .driverDetails .shopName span,
+.mainPopup .shipmentId span {
+    font-size: 8px;
+    color: #949494;
+}
+
+.mainPopup .driverDetails .shopName p,
+.mainPopup .shipmentId p {
+    font-size: 9.6px;
+    color: #585858;
+    font-weight: 400;
+    margin: 0;
+}
+
+.mainPopup .shipmentId p {
+    color: #000;
+    font-weight: 500;
+    background-color: #f9f9f9;
+    border-radius: .8rem;
+    padding: .3rem .8rem;
+}
+
+.mainPopup .driverDetails .shopImage {
+    width: 28.8px;
+    height: 28.8px;
+    border: .5px solid #F2F2F2;
+    text-align: center;
+}
+
+.mainPopup .driverDetails .shopImage img {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+}
+
+.mainPopup .driverDetails .detailItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-right: .5px solid #F2F2F2;
+    padding: 0 8px;
+}
+
+.mainPopup .shipmentId {
+    width: fit-content;
+    padding: 0 8px;
+    margin: 1rem 0;
+
+}
+
+.mainPopup .collapse-wrapper {
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+.mainPopup .collapse-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.mainPopup .seeMoreBtn {
+    width: 100%;
+    border: none;
+    background-color: #fff;
+    padding: 8px 0;
+    color: #f46624;
+    font-size: 12.8px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 12.8px;
+}
+
+
+/* Drop Down Menu */
+
+.mainPopup .dropdown-toggle::after {
+    display: none !important;
+}
+
+.mainPopup .dropdown-menu {
+    margin: 0;
+    padding: 0 !important;
+    border-radius: 16px !important;
+    min-width: 7rem;
+    border: .1rem solid #F2F2F2;
+    overflow: hidden;
+    margin-top: .1rem;
+
+}
+
+.mainPopup .dropdown-menu li a {
+    cursor: pointer;
+    list-style: none;
+    padding: 14px;
+    width: 100%;
+    background-color: #fff;
+    font-size: 12px;
+}
+
+.mainPopup .dropdown-menu li:hover a {
+    color: #fff !important;
+    background-color: #f46624 !important;
+}
+
+
+#historyModal:not(.show) {
+    z-index: -1;
+}
+
+
+
+
+/* assign driver style  */
+
+
+
+
+
+
+
+.assignDriver {
+    padding: 25.6px;
+    border-radius: 12.8px;
+}
+
+.assignDriverModal:not(.show) {
+    z-index: -1;
+}
+
+.assignDriver .modal-xl {
+    width: 891.2px;
+}
+
+.assignDriver .head h4 {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18.4px;
+    margin: 0;
+}
+
+.assignDriver .head p {
+    font-size: 12.8px;
+    line-height: 14.71px;
+    margin: 0;
+    padding-top: 8px;
+}
+
+.assignDriver .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border: none;
+    padding: 0;
+    padding-bottom: 25.6px;
+}
+
+.assignDriver .modal-header button {
+    background-color: transparent;
+    border: none;
+    display: flex;
+}
+
+.assignDriver .modal-header button svg {
+    width: 19.2px;
+    height: 19.2px;
+}
+
+/* Map */
+
+.assignDriver .map {
+    width: 100%;
+    height: 176px;
+    border-radius: 9.6px;
+    background-color: #ccc;
+}
+
+
+
+
+/* Table Styles */
+
+.assignDriver table {
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 350px;
+
+}
+
+
+
+.assignDriver table tr th {
+    /* border-top: 1px solid #bbb !important; */
+    text-align: left;
+    font-size: 11.2px;
+    color: #b4b4b4;
+    padding: 12.8px 8px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.assignDriver table tr td {
+    text-align: center;
+    padding: 8px;
+}
+
+
+.assignDriver .driverImageData {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.assignDriver .driverData .driverPhone {
+    color: #949494;
+    font-size: 9.6px;
+    margin: 0;
+    font-weight: 400;
+    text-align: left;
+}
+
+.assignDriver .driverImageWrapper {
+    width: 32px;
+    height: 32px;
+}
+
+.assignDriver .driverImageWrapper img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.assignDriver .driverData .driverName {
+    color: #585858;
+    font-size: 12.8px;
+    margin: 0;
+    font-weight: 400;
+    width: 120px;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    cursor: grab;
+    user-select: none;
+    text-align: left;
+
+}
+
+.assignDriver .driverData .driverName:active {
+    cursor: grabbing;
+    /* Change cursor to grabbing while dragging */
+}
+
+.assignDriver .driverData .driverName::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar for Chrome, Safari, and Edge */
+}
+
+.assignDriver .destinationContainer {
+    display: flex !important;
+    align-items: center;
+    gap: .5rem;
+    padding: 12px;
+    border-top: none !important;
+}
+
+.assignDriver .destinationContainer svg {
+    width: 24px;
+    height: 24px;
+}
+
+.assignDriver .destination h5 {
+    font-size: 9.6px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.assignDriver .destination p {
+    font-size: 8px;
+
+}
+
+.assignDriver .destination {
+    position: relative;
+    top: 8px;
+    text-align: left;
+}
+
+.assignDriver .assignBtn {
+    background-color: orangered;
+    color: #fff;
+    border-radius: 9.6px;
+    font-size: 12.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    padding: 8.2px 20.8px;
+    font-weight: 700;
+}
+
+.assignDriver .scrollable-table {
+    max-height: 250px;
+    /* Adjust the height as needed */
+    overflow-y: auto;
+    border-radius: 6.4px;
+    border: 1px solid #e2e5e9;
+    margin-top: 1.5rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+}
+
+.assignDriver table {
+    width: 100%;
+    /* Ensure the table takes full width */
+    border-collapse: collapse;
+    /* Prevent spacing between cells */
+}
+
+
+.assignDriver th {
+    position: sticky;
+    /* Keep the header fixed when scrolling */
+    top: -2px;
+    background-color: #f8f9fa;
+    z-index: 2;
+    /* Ensure the header stays above the content */
+}
+
+.assignDriver .scrollable-table::-webkit-scrollbar {
+    display: none;
+}
+
+.assignDriver table tr td {
+    cursor: pointer !important;
+}
+
+
+
+
+
+
+/* driver style  */
+
+
+
+
+
+.driverPopup {
+    padding: 16px 19.2px;
+    border-radius: 12.8px;
+    width: 600px !important;
+}
+
+
+.driverPopup .driver-metadata {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #D9D9D9;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.driverPopup .driverNamePhone {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.driverPopup .driverNamePhone .driverImageWrapper {
+    width: 32px;
+    height: 32px;
+}
+
+.driverPopup .driverNamePhone .driverImageWrapper img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.driverPopup .driverNamePhone .driverData .driverName {
+    color: #585858;
+    font-size: 12.8px;
+    margin: 0;
+    font-weight: 400;
+    width: 120px;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    cursor: grab;
+    user-select: none;
+
+}
+
+.driverPopup .driverNamePhone .driverData .driverName:active {
+    cursor: grabbing;
+    /* Change cursor to grabbing while dragging */
+}
+
+.driverPopup .driverNamePhone .driverData .driverName::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar for Chrome, Safari, and Edge */
+}
+
+
+
+
+
+.driverPopup .driverNamePhone .driverData .driverPhone {
+    color: #949494;
+    font-size: 9.6px;
+    margin: 0;
+    font-weight: 400;
+}
+
+.driverPopup .driverCar {
+    width: 23px;
+    height: 29.9px;
+}
+
+.driverPopup .driverCar svg {
+    width: 100%;
+    height: 100%;
+}
+
+.driverPopup .driverImageData {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px 10px 0;
+    border-right: 1px solid #D9D9D9;
+}
+
+
+.driverPopup .driverTasks {
+    display: flex;
+    align-items: center;
+}
+
+.driverPopup .driverTasks span {
+    padding: 6.4px 12.8px;
+    font-size: 9.6px;
+    background-color: #f9f9f9;
+    color: #949494;
+    border-radius: 9.6px;
+}
+
+.driverPopup .icons svg {
+    width: 19.2px;
+    height: 19.2px;
+}
+
+.driverPopup .icons .icon:first-child {
+    border-right: 1px solid #D9D9D9;
+}
+
+.driverPopup .icons .icon:nth-child(2) {
+    border-right: 1px solid #D9D9D9;
+}
+
+
+
+/* Collapse Container */
+.driverPopup .collapse-container {
+    padding: 8px;
+}
+
+.driverPopup .collapse-container .card-body {
+    padding: 0 12px 6px 6px;
+    border: none;
+    border-top: 1px solid #D9D9D9;
+    margin-top: .5rem;
+}
+
+.driverPopup .collapse-container .scroll-icon {
+    width: 19.2px;
+}
+
+.driverPopup .collapse-tab {
+    /* transition: all 0.2s ease; */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+}
+
+.driverPopup .collapse-tab:hover {
+    text-decoration: none;
+}
+
+.driverPopup .collapseIcon {
+    width: 19.2px;
+    position: relative;
+    top: -3px;
+}
+
+.driverPopup .collapseIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.driverPopup .collapseNameIcon h4 {
+    font-size: 12.8px;
+    color: #3a3a3a;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.driverPopup .collapseNameIcon {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.driverPopup .collapseBadge {
+    font-size: 9.6px;
+    color: #22ad2f;
+    padding: .3rem 1.2rem;
+    background-color: #e6f5e6;
+    border-radius: .8rem;
+}
+
+.driverPopup .editIcon {
+    width: 16px;
+    position: relative;
+    top: -3px;
+
+}
+
+.driverPopup .editIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.driverPopup .collapseArrowsBadges {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 8px;
+}
+
+.driverPopup .collapse-tab:not(.collapsed) .downarrow svg {
+    transform: rotate(180deg);
+}
+
+.driverPopup .collapse-tab:not(.collapsed) {
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+}
+
+.driverPopup .collapse-container .card {
+    border-radius: 0 0 8px 8px !important;
+}
+
+
+/* Card Style */
+.driverPopup .driverDetails {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 8px 0;
+    gap: 1rem;
+}
+
+.driverPopup .driverDetails .shopName span,
+.driverPopup .shipmentId span {
+    font-size: 8px;
+    color: #949494;
+}
+
+.driverPopup .driverDetails .shopName p,
+.driverPopup .shipmentId p {
+    font-size: 9.6px;
+    color: #585858;
+    font-weight: 400;
+    margin: 0;
+}
+
+.driverPopup .driverDetails .shopImage {
+    width: 28.8px;
+    height: 28.8px;
+    border: .5px solid #F2F2F2;
+    text-align: center;
+}
+
+.driverPopup .driverDetails .shopImage img {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+}
+
+.driverPopup .driverDetails .detailItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-right: .5px solid #F2F2F2;
+    padding: 0 8px;
+}
+
+
+.driverPopup .collapse-wrapper {
+    max-height: 233px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.driverPopup .collapse-wrapper::-webkit-scrollbar {
+    display: none !important;
+}
+
+.driverPopup .driverDetails .detailItem:last-child {
+    border-right: 0;
+}
+
+.driverPopup .collapse-container {
+    display: flex;
+    align-items: center;
+    padding: 8px 12.8px;
+    border: 1px solid #000;
+    border-radius: .8rem;
+    cursor: grab;
+    gap: 1rem;
+
+}
+
+.driverPopup .collapseContent {
+    width: 100%;
+
+}
+
+.driverPopup .bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #000;
+}
+
+.driverPopup .closeBtn {
+    width: 26px;
+    height: 26px;
+    padding: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, .8);
+    border-radius: 6px;
+    border: none;
+    position: absolute;
+    top: -35px;
+    right: 0px;
+}
+
+.driverPopup .closeBtn svg {
+    width: 17px;
+    height: 17px;
+    fill: #fff
+}
+
+.driverPopup .closeBtn:hover {
+    background-color: #f46624;
+}
+
+
+
+
+
+
+
+
+/* order details style  */
+
+
+
+
+
+
+
+
+
+
+
+.orderDetailsModal .modal-content {
+    padding: 25.6px !important;
+    border-radius: 12.8px;
+}
+
+.orderDetailsModal:not(.show) {
+    z-index: -1;
+}
+
+.orderDetailsModal .modal-xl {
+    width: 891.2px;
+}
+
+.orderDetailsModal .modal-header {
+    border: none;
+    padding: 0;
+}
+
+.orderDetailsModal .modal-body {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.orderDetailsModal .head h4 {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18.4px;
+    margin: 0;
+}
+
+.orderDetailsModal .head p {
+    font-size: 12.8px;
+    line-height: 14.71px;
+    margin: 0;
+    padding-top: 8px;
+}
+
+/* .orderDetailsModal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border: none;
+        padding: 0;
+        padding-bottom: 25.6px;
+    } */
+
+.orderDetailsModal .modal-header button {
+    background-color: transparent;
+    border: none;
+    display: flex;
+}
+
+.orderDetailsModal .modal-header button svg {
+    width: 19.2px;
+    height: 19.2px;
+}
+
+/* Map */
+
+.orderDetailsModal .map {
+    width: 100%;
+    height: 176px;
+    border-radius: 9.6px;
+    background-color: #ccc;
+}
+
+
+
+
+/* Table Styles */
+
+.orderDetailsModal table {
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 350px;
+
+}
+
+
+
+.orderDetailsModal table tr th {
+    /* border-top: 1px solid #bbb !important; */
+    text-align: left;
+    font-size: 11.2px;
+    color: #b4b4b4;
+    padding: 12.8px 8px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.orderDetailsModal table tr td {
+    text-align: center;
+    padding: 8px;
+}
+
+
+.orderDetailsModal .driverImageData {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.orderDetailsModal .driverData .driverPhone {
+    color: #949494;
+    font-size: 9.6px;
+    margin: 0;
+    font-weight: 400;
+    text-align: left;
+}
+
+.orderDetailsModal .driverImageWrapper {
+    width: 32px;
+    height: 32px;
+}
+
+.orderDetailsModal .driverImageWrapper img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.orderDetailsModal .driverData .driverName {
+    color: #585858;
+    font-size: 12.8px;
+    margin: 0;
+    font-weight: 400;
+    width: 120px;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    cursor: grab;
+    user-select: none;
+    text-align: left;
+
+}
+
+.orderDetailsModal .driverData .driverName:active {
+    cursor: grabbing;
+    /* Change cursor to grabbing while dragging */
+}
+
+.orderDetailsModal .driverData .driverName::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar for Chrome, Safari, and Edge */
+}
+
+.orderDetailsModal .destinationContainer {
+    display: flex !important;
+    align-items: center;
+    gap: .5rem;
+    padding: 12px;
+    border-top: none !important;
+}
+
+.orderDetailsModal .destinationContainer svg {
+    width: 24px;
+    height: 24px;
+}
+
+.orderDetailsModal .destination h5 {
+    font-size: 9.6px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.orderDetailsModal .destination p {
+    font-size: 8px;
+
+}
+
+.orderDetailsModal .destination {
+    position: relative;
+    top: 8px;
+    text-align: left;
+}
+
+.orderDetailsModal .assignBtn {
+    background-color: orangered;
+    color: #fff;
+    border-radius: 9.6px;
+    font-size: 12.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    padding: 8.2px 20.8px;
+    font-weight: 700;
+}
+
+.orderDetailsModal .scrollable-table {
+    max-height: 250px;
+    /* Adjust the height as needed */
+    overflow-y: auto;
+    border-radius: 6.4px;
+    border: 1px solid #e2e5e9;
+    margin-top: 1.5rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+}
+
+.orderDetailsModal table {
+    width: 100%;
+    /* Ensure the table takes full width */
+    border-collapse: collapse;
+    /* Prevent spacing between cells */
+}
+
+
+.orderDetailsModal th {
+    position: sticky;
+    /* Keep the header fixed when scrolling */
+    top: -2px;
+    background-color: #f8f9fa;
+    z-index: 2;
+    /* Ensure the header stays above the content */
+}
+
+.orderDetailsModal .scrollable-table::-webkit-scrollbar {
+    display: none;
+}
+
+
+
+/* Classes For Second modal */
+
+.orderDetailsModal .driverIdentity {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #c8c8c8;
+    padding: 8px;
+    border-radius: 9.6px;
+}
+
+.orderDetailsModal .changeDriverBtn {
+    font-size: 11.2px;
+    color: #585858;
+    padding: 8px 28.8px;
+    border-radius: 9.6px;
+    border: 1px solid #c8c8c8;
+    background-color: transparent;
+}
+
+.orderDetailsModal .driverOrdersDetails h3 {
+    margin: 25.6px 0 9.6px;
+    font-weight: 600;
+}
+
+.orderDetailsModal .driverOrdersDetails p {
+    color: #949494;
+    font-size: 12.8px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.orderDetailsModal .collapse-container {
+    padding: 8px;
+}
+
+.orderDetailsModal .collapse-container .card-body {
+    padding: 0 12px 6px 6px;
+    border: none;
+    border-top: 1px solid #D9D9D9;
+    margin-top: .5rem;
+}
+
+
+.orderDetailsModal .collapse-tab {
+    transition: all 0.2s ease;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+}
+
+.orderDetailsModal .collapse-tab:hover {
+    text-decoration: none;
+}
+
+.orderDetailsModal .collapseIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 9.6px;
+    font-weight: 700;
+
+    padding: 16px;
+    border-radius: 25%;
+    color: #fff;
+    width: 12.8px;
+    height: 12.8px;
+    position: relative;
+    gap: 1.6px;
+    background-color: #000;
+    border: 1px solid #000;
+
+    box-shadow: 0 0 0 2px #f3f5f6 inset;
+    box-sizing: border-box;
+}
+
+.orderDetailsModal .collapseIcon p {
+    margin: 0;
+}
+
+.orderDetailsModal .collapseNameIcon h4 {
+    font-size: 12.8px;
+    color: #3a3a3a;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.orderDetailsModal .collapseNameIcon {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.orderDetailsModal .collapseBadge {
+    font-size: 9.6px;
+    color: #22ad2f;
+    padding: .3rem 1.2rem;
+    background-color: #e6f5e6;
+    border-radius: .8rem;
+}
+
+.orderDetailsModal .editIcon {
+    width: 16px;
+    position: relative;
+    top: -3px;
+
+}
+
+.orderDetailsModal .editIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.orderDetailsModal .collapseArrowsBadges {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 8px;
+}
+
+.orderDetailsModal .collapse-tab:not(.collapsed) .downarrow svg {
+    transform: rotate(180deg);
+}
+
+.orderDetailsModal .collapse-tab:not(.collapsed) {
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+}
+
+.orderDetailsModal .collapse-container .card {
+    border-radius: 0 0 8px 8px !important;
+}
+
+
+/* Card Style */
+.orderDetailsModal .driverDetails {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 8px 0;
+    gap: 1rem;
+}
+
+.orderDetailsModal .driverDetails .shopName span,
+.shipmentId span {
+    font-size: 8px;
+    color: #949494;
+}
+
+.orderDetailsModal .driverDetails .shopName p,
+.shipmentId p {
+    font-size: 9.6px;
+    color: #585858;
+    font-weight: 400;
+    margin: 0;
+}
+
+.orderDetailsModal .driverDetails .shopImage {
+    width: 28.8px;
+    height: 28.8px;
+    border: .5px solid #F2F2F2;
+    text-align: center;
+}
+
+.orderDetailsModal .driverDetails .shopImage img {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+}
+
+.orderDetailsModal .driverDetails .detailItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-right: .5px solid #F2F2F2;
+    padding: 0 8px;
+}
+
+
+.orderDetailsModal .collapse-wrapper {
+    max-height: 233px;
+    overflow-y: scroll !important;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.orderDetailsModal .collapse-wrapper::-webkit-scrollbar {
+    display: none !important;
+}
+
+.orderDetailsModal .driverDetails .detailItem:last-child {
+    border-right: 0;
+}
+
+.orderDetailsModal .collapse-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 8px 12.8px;
+    border: 1px solid #c8c8c8;
+    border-radius: .8rem;
+    cursor: grab;
+    gap: 1rem;
+
+    position: relative;
+
+}
+
+.orderDetailsModal .order-number {
+    text-align: right;
+    position: absolute;
+    top: 8px;
+    right: 12.8px;
+    font-size: 11.2px;
+    color: orangered;
+    font-weight: 700;
+}
+
+.orderDetailsModal .collapseContent {
+    width: 100%;
+
+}
+
+.orderDetailsModal .bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #000;
+}
+
+.orderDetailsModal .driverOrdersDetailsContent p:first-child {
+    font-size: 11.2px;
+    color: #585858;
+    margin: 0;
+}
+
+.orderDetailsModal .driverOrdersDetailsContent p {
+    font-size: 9.6px;
+    color: #949494;
+    margin: 0;
+}
+
+.orderDetailsModal .driverOrdersDetailsContent {
+    margin-left: .5rem;
+}
+
+.orderDetailsModal .ordersDetailsActionBtn {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    margin: 25.6px 0 0;
+}
+
+.orderDetailsModal .changeDriverBtn.assignBtn {
+    background-color: orangered;
+    color: #fff;
+    border: 1px solid orangered;
+    padding: 8px 32.8px;
+
+}
+
+
+
+
+/* create order  */
+
+
+
+
+.loader {
+    display: none;
+    /* Initially hidden */
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    z-index: 99999999;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.8);
+    /* Optional light background overlay */
+
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.overlay {
+    display: none;
+    /* Initially hidden */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Dimmed background effect */
+    z-index: 9999999;
+}
+
+.show {
+    display: block !important;
+    /* To show loader and overlay */
+}
+
+
+
+
+/* assign driver  */
+
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+.loader {
+    display: none;
+    /* Initially hidden */
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    z-index: 99999999;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.8);
+    /* Optional light background overlay */
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.overlay {
+    display: none;
+    /* Initially hidden */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Dimmed background effect */
+    z-index: 9999999;
+}
+
+.show {
+    display: block !important;
+    /* To show loader and overlay */
+}

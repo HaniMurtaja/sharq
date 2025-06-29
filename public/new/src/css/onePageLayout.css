@@ -1,0 +1,49 @@
+.onePageLayout{
+    background-color: #f9f9f9;
+    padding: 19.2px;
+}
+.pageHeader{
+    margin-bottom: 19.2px;
+}
+.pageHeader h1{
+    font-size: 19.2px;
+    padding-bottom: 19.2px;
+    font-weight: 600;
+    border-bottom: .8px solid #c8c8c8;
+}
+
+.clientOrders .scrollable-table-custom {
+    margin: 9.2px 0 48px 0;
+}
+.clientOrders table tr td {
+    border-bottom: none;
+}
+.online-orders-actions{
+    margin: 7px 0;
+}
+
+.order-details .order-data{
+    padding: 5px ;
+    border-bottom: .8px solid #dee2e6 !important;
+}
+.order-details .order-data:last-child{
+    border-bottom: none !important;
+}
+
+.action-btn-container{
+    position: relative;
+    left: 70px;
+}
+
+
+.order-details{
+    border-bottom: .8px solid #dee2e6 !important;
+}
+.order-details:last-child{
+    border-bottom: none !important;
+}
+
+.action-btn-container{
+    display: flex;
+    justify-content: center;
+}

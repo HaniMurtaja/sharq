@@ -1,0 +1,196 @@
+.informationDetailsCards{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.informationDetailsCard{display:grid;width:100%;padding:12.8px;grid-template-columns:minmax(auto,max-content) auto;grid-template-rows:auto auto;-webkit-column-gap:12.8px;column-gap:12.8px;border-radius:6.4px;background-color:#f9f9f9}
+.informationDetailsCard div:first-child{background-color:#fff;padding:8px;border-radius:50%;outline:solid .8px #cecece;grid-area:1/1/3/2;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center}
+.informationDetailsCard .clientName{grid-area:1/2/2/3;font-weight:600;font-size:12.8px!important;color:#1a1a1a!important}
+.informationDetailsCard p:last-child{grid-area:2/2/3/3;font-size:9.6px!important;color:#949494}
+.informationFields{display:grid;grid-template-columns:repeat(2,1fr);row-gap:25.6px;column-gap:12.8px}
+.clientOrders .searchBox{border:.8px solid #c8c8c8;width:30%;display:none}
+.smFontInTable{font-size:9.6px!important}
+.clientOrders .orderDate{color:#949494}
+.clientOrders .orderStatus{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;width:100%;border-radius:6.4px;color:#ff28cd40;padding:6.4px 12.8px}
+.clientOrders .orderStatus.delivered{background-color:#e6f5e6;color:#22ad2f}
+.clientOrders .orderStatus.cancelled{background-color:#ffeae0;color:#a30133}
+.clientOrders .addBtn{color:#a30133!important;margin:0 12.8px}
+.clientBranchCards{padding:12.8px;padding-top:0!important}
+.clientBranchCard{display:flex;justify-content:space-between;align-items:center;border-bottom:.8px solid #c8c8c8;padding:12.8px 0}
+.clientBranchCardInfo{display:grid;grid-template-columns:auto fit-content;grid-auto-rows:auto;-webkit-column-gap:9.6px;column-gap:9.6px}
+.invalid-feedback{position:absolute;top:100%;font-size:8.96px!important}
+.scrollable-table .clientBranchCardInfo .branchName{grid-area:1/2/2/3;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;font-size:11.2px;color:#585858}
+.clientBranchCardInfo p:last-child{grid-area:2/2/3/3;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;font-size:9.6px;color:#949494}
+.clientBranchCardInfo div{grid-area:1/1/3/2;width:32px;aspect-ratio:1/1;outline:solid .8px #cecece;border-radius:50%;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center}
+.clientBranchCardActions{display:flex;align-items:center;justify-content:space-between;width:40%;gap:12.8px}
+.clientBranchCardActions div{display:flex;justify-content:center;align-items:center;width:100%}
+.clientBranchCardActions .form-check{border-right:.8px solid #c8c8c8!important;border-radius:0!important;padding:0!important;min-height:10px;border:none;justify-content:space-around!important}
+.clientBranchCardActions .form-check-label{font-size:9.6px;white-space:nowrap;color:#949494;position:relative;top:2px;left:-20px}
+.clientBranchCardActions .form-check:hover{background-color:transparent}
+.clientBranchCardActions svg{flex-shrink:0}
+.users .clientBranchCardActions{width:20%}
+.users .clientBranchCardInfo div{border:solid 1.6px #22ad2f}
+.users .clientBranchCardInfo div svg{filter:brightness(.3)}
+.clientOrders.branches .scrollable-table,.clientOrders.users .scrollable-table{height:240px}
+.sectionGlobalForm.zones .informationFields .custom-fieldset:first-child{grid-area:1/span 2}
+.search-box{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;padding:6.4px 0 6.4px 12.8px!important;width:94%!important;margin:auto;font-size:9.6px!important;border:solid .8px transparent;border-radius:4.8px!important;background-image:url("data:image/svg+xml,%3Csvg%20width%3D'20'%20height%3D'20'%20viewBox%3D'0%200%2020%2020'%20fill%3D'none'%20xmlns%3D'http://www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M9.58268%2017.4998C13.9549%2017.4998%2017.4993%2013.9554%2017.4993%209.58317C17.4993%205.21092%2013.9549%201.6665%209.58268%201.6665C5.21043%201.6665%201.66602%205.21092%201.66602%209.58317C1.66602%2013.9554%205.21043%2017.4998%209.58268%2017.4998Z'%20stroke%3D'%23949494'%20stroke-width%3D'1.5'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3Cpath%20d%3D'M18.3327%2018.3332L16.666%2016.6665'%20stroke%3D'%23949494'%20stroke-width%3D'1.5'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E")!important;background-repeat:no-repeat!important;background-position:95% center!important;background-size:16px!important;background-color:#f2f2f2!important}
+.search-box:focus{border-color:#a30133!important;box-shadow:none!important}
+.dropdown-item{display:block}
+#dynamic-fields{display:flex;flex-direction:column;gap:19.2px;margin-top:19.2px}
+.dynamic-row{gap:19.2px;display:flex}
+.dynamic-row div{width:100%}
+.dynamic-row .action-btn{flex-shrink:2}
+.zones .informationFields{display:block!important}
+.zones .action-btn button{background:0 0;border:none;box-shadow:none}
+.branches .itemListDivider{margin:40px 0;position:relative}
+#selectDriverCount{position:absolute;top:0;z-index:1;padding:8px;font-size:11.2px;color:#949494;font-weight:600;right:0}
+.branches .select2-dropdown{width:250px}
+.informationDetailsCard:nth-child(3):hover svg path{fill:#a30133}
+.informationDetailsCard:nth-child(3):hover .totalBalance{color:#a30133!important}
+.informationDetailsCard:nth-child(3):hover{cursor:pointer}
+#addNewBranchModal .select2-container--open:last-child{z-index:1063!important;top:33px!important;left:0!important}
+.clientModalPopup .modal-body{display:grid;grid-template-columns:repeat(2,1fr);gap:12.8px;height:500px;row-gap:22.2px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none}
+.clientModalPopup .modal-body::-webkit-scrollbar{display:none}
+.legendPhoneNumber.positioned{display:block!important}
+.mainContent .modalSelectBox .select2-container .select2-selection--multiple,.mainContent .modalSelectBox.phoneNewBranch .select2-container .select2-selection--single{border-radius:9.6px 0 0 9.6px!important;height:35.28px!important}
+.modalSelectBox input{border:.8px solid #dee2e6;border-left:none;border-radius:0 9.6px 9.6px 0;outline:0;padding:0 8px;font-size:11.2px;width:100%}
+.modalSelectBox.phoneNewBranch .select2-container{width:fit-content!important}
+.modalSelectBox .select2-container--default .select2-selection--single .select2-selection__placeholder{color:#999;font-size:9.6px;position:relative;top:1px;font-weight:300}
+.clientCreateForm .modalSelectBox .select2-container--default .select2-selection--single .select2-selection__placeholder{color:#999;font-size:11.2px;position:relative;top:1px;font-weight:300}
+#addNewBranchModal #formMap{height:220px;grid-area:1/span 2;grid-row:8}
+.customTextarea textarea{width:100%;height:100%;outline:0;resize:none;padding:8px}
+.customTextarea textarea:focus::placeholder{display:none!important}
+.branchBussinessHours{display:flex}
+.branchBussinessHoursContainer{grid-area:1/span 2;grid-row:initial}
+.branchBussinessHours .action-btn button{background:0 0;border:none;height:fit-content;padding-left:16px}
+.mainContent .branchBussinessHours .modalSelectBox:nth-child(1) .select2-container .select2-selection--single{border-radius:9.6px 0 0 9.6px!important}
+.mainContent .branchBussinessHours .modalSelectBox:nth-child(2) .select2-container .select2-selection--single{border-radius:0!important}
+.mainContent .branchBussinessHours .modalSelectBox:nth-child(3) .select2-container .select2-selection--single{border-radius:0 9.6px 9.6px 0!important}
+.branchBussinessHoursContainer{gap:22.2px}
+.mainContent .branchBussinessHoursContainer .select2-container .select2-selection--single,.select2-container .select2-selection--multiple{height:34.4px!important}
+.branchBussinessHoursContainer .select2-container--default .select2-results>.select2-results__options{max-height:70px!important;overflow-y:scroll!important;scrollbar-width:none!important}
+.clientModalPopup .templatesActionBtns{grid-area:1/span 2}
+#addNewBranchModal .templatesActionBtns{margin-top:5rem;grid-row:initial}
+#addNewUserModal .templatesActionBtns{grid-row:10}
+#editUserModal .templatesActionBtns{grid-row:12}
+#addNewUserModal .tab-content{display:block}
+#addNewUserModal .modal-body{display:flex;flex-direction:column}
+#addNewUserModal .btn.active{border:none;border-radius:0}
+#addNewUserModal .btn{border:none;border-radius:0;background-color:transparent;transition:none!important;animation:none!important;box-shadow:none!important;font-size:11.2px;padding:12.8px 25.6px;color:#949494}
+#addNewUserModal .btn:active{transform:none!important;box-shadow:none!important}
+#addNewUserModal .btn:hover{box-shadow:none!important}
+#addNewUserModal .tab-buttons{border-top:.8px solid #c8c8c8;border-bottom:.8px solid #c8c8c8}
+#addNewUserModal form{display:grid;grid-template-columns:repeat(2,1fr);padding:0;margin:0}
+.mainContent .dataContent .select2-container .select2-selection--multiple .select2-selection__rendered{display:inline-block;list-style:none;padding:0;position:absolute;top:10px;gap:8px;right:8px;overflow:hidden;text-decoration:underline;cursor:pointer}
+.selectedClientsBox{border:.8px solid #c8c8c8;border-radius:9.6px;padding:11.2px;font-size:11.2px;color:#585858;height:70px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;position:absolute;width:100%}
+.selectedClientsBox::-webkit-scrollbar{display:none}
+.selectedClientsBox h4{font-weight:600}
+.mainContent #addNewUserModal .modalSelectBox .select2-container .select2-selection--multiple{border-radius:9.6px!important;height:35.28px!important}
+#addNewUserModal #branchesData,#addNewUserModal #branchesDataExisting,#editBranchesData{grid-area:1/span 2;grid-row:initial;gap:12.8px;display:flex}
+#addNewUserModal #branchesData .select2-container--default .select2-results>.select2-results__options,#addNewUserModal #branchesDataExisting .select2-container--default .select2-results>.select2-results__options{max-height:55px!important}
+.customForm{display:grid;grid-template-columns:repeat(2,1fr);gap:25.6px}
+.groupCreateForm .customForm{align-items:center}
+.zonesCreateForm .customForm{display:flex;flex-direction:column}
+.clientCreateForm .itemListDivider,.groupCreateForm .itemListDivider{grid-area:10/span 2}
+.cropper-face,.cropper-view-box{border-radius:50%!important}
+#photoModal.show{z-index:1051!important}
+#photoModal .modal-body{width:100%;height:400px;position:relative;padding:0}
+#uploadedImage{max-width:100%;max-height:100%;object-fit:contain}
+#photoModal .modal-body{width:100%;height:400px;position:relative;padding:0}
+.crop-container{width:100%;max-height:380px;overflow:hidden;margin:20px 0}
+.uploadImageBtn{width:64px;height:64px;text-align:center;display:flex;position:relative;justify-content:center;align-items:center;border:solid .2rem #22ad2f;border-radius:50%}
+.uploadImageBtn svg{filter:grayscale(1);opacity:.4}
+.uploadImageBtn svg:nth-child(2){position:absolute;bottom:0;right:0;filter:grayscale(0) drop-shadow(1px 1px 2px #ddd);opacity:1;z-index:2}
+#croppedImage{width:64px;height:64px;position:absolute;top:0;border:2px solid #22ad2f;z-index:0;border-radius:50%}
+#croppedImage img{width:100%;height:100%}
+#repeater-per-stop .col-md-2{max-width:13.6%!important}
+#per-km-repeater{display:flex;flex-direction:column;gap:25.6px;margin-top:15px}
+.btn.btn-add-formula{position:relative;top:-12px}
+.btn.btn-delete-formula{position:relative;top:-12px}
+.groupCreateForm #calcMethod{grid-area:6/span 2}
+.clientsSearch{padding:19.2px;border-radius:16px;background-color:#fff}
+.clientsSearchResults{max-height:67vh;height:67vh;overflow-y:scroll;margin-top:16px;scrollbar-width:none;-ms-overflow-style:none}
+.clientsSearchResults::-webkit-scrollbar{display:none}
+.clientSearchHeader{display:flex;align-items:center;justify-content:space-between}
+.clientSearchHeader p{margin:0;color:#949494;font-size:11.2px;font-weight:600}
+.clientSearchHeader p:last-child{font-size:8px}
+#branches-table_wrapper .table>:not(caption)>*>*,#users-table_wrapper .table>:not(caption)>*>*{padding:0!important;background-color:transparent!important;border-bottom-width:0!important;box-shadow:none!important;width:100%!important}
+.clientOrders .sectionTitle{margin:9.6px 0}
+.clientOrders{padding-bottom:50px}
+.edituserModal{display:grid;grid-template-columns:repeat(2,1fr);gap:12.8px;height:500px;row-gap:22.2px;overflow-y:scroll;scrollbar-width:none}
+.edituserModal .templatesActionBtns{grid-row:initial}
+#editUserModal .modal-body{display:block!important}
+#editUserModal .modalSelectBox .select2-container .select2-selection--multiple{border-radius:9.6px!important}
+
+@media (max-width:1200px) {
+    .informationDetailsCard .text-slide-wrapper{
+        width: 100px;
+    }
+    .branches .clientBranchCard{
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12.8px;
+    }
+    .branches .clientBranchCardActions{
+        gap: 0;
+        align-items: flex-end;
+        width: 100%;
+    }
+    .branches .clientBranchCardActions .form-check {
+        border-right: none !important;
+    }
+    .branches .edit-client-branch{
+        position: relative;
+        width: 100%;
+        text-align: -webkit-right;
+    }
+    .branches .edit-client-branch::before{
+        content: "Setting";
+        position: absolute;
+        left: 14px;
+        top: 5px;
+        color: #949494;
+        font-weight: 600;
+        font-size: 9.6px;
+    }
+}
+
+@media (max-width: 576px){
+    .uploadBranchesBtn{
+        bottom: -32px !important;
+        flex-direction: row !important;
+        width: max-content !important;
+        left: -16px !important;
+    }
+}
+
+
+.clientActiveGreenIcon{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    font-size: 11.2px;
+    background-color: #06750b;
+    font-weight: 600;
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+
+}
+
+.clientActiveGrayIcon{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    font-size: 11.2px;
+    background-color: #949494;
+    font-weight: 600;
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+
+}
+
+.p-19px{
+    padding: 0 19.2px;
+}
+
+

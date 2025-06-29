@@ -1,0 +1,27 @@
+-----------------
+{"customer_name":"X X","customer_phone":"966552959559","client_order_id":"45816102","pickup_id":"9999924108","lat":"25.40203578983","lng":"49.551887210198","value":"0","payment_type":"2"}
+{"authorization":["Bearer kgWCSn7Vs8QhwqEEcwAN6mF9gazNVAU6"],"content-type":["application\/json"],"user-agent":["PostmanRuntime\/7.43.3"],"accept":["*\/*"],"cache-control":["no-cache"],"postman-token":["15e62783-571a-4e9b-9eb0-39f531b6db57"],"host":["al_shrouq_express_system.test"],"accept-encoding":["gzip, deflate, br"],"connection":["keep-alive"],"content-length":["229"]}
+-----------------
+{"customer_name":"X X","customer_phone":"966552959559","client_order_id":"45816102","pickup_id":"58848","lat":"25.40203578983","lng":"49.551887210198","value":"0","payment_type":"2"}
+{"authorization":["Bearer kgWCSn7Vs8QhwqEEcwAN6mF9gazNVAU6"],"content-type":["application\/json"],"user-agent":["PostmanRuntime\/7.43.3"],"accept":["*\/*"],"cache-control":["no-cache"],"postman-token":["162c1f69-d94a-4502-a19b-509f0e53caa4"],"host":["al_shrouq_express_system.test"],"accept-encoding":["gzip, deflate, br"],"connection":["keep-alive"],"content-length":["224"]}
+-----------------
+{"customer_name":"X X","customer_phone":"966552959559","client_order_id":"45816102","pickup_id":"9999927093","lat":"25.40203578983","lng":"49.551887210198","value":"0","payment_type":"2"}
+{"authorization":["Bearer kgWCSn7Vs8QhwqEEcwAN6mF9gazNVAU6"],"content-type":["application\/json"],"user-agent":["PostmanRuntime\/7.43.3"],"accept":["*\/*"],"cache-control":["no-cache"],"postman-token":["958e2212-5156-4808-9313-a464b747036e"],"host":["al_shrouq_express_system.test"],"accept-encoding":["gzip, deflate, br"],"connection":["keep-alive"],"content-length":["229"]}
+-----------------
+{"customer_name":"X X","customer_phone":"966552959559","client_order_id":"45816102","pickup_id":"9999927093","lat":"25.40203578983","lng":"49.551887210198","value":"0","payment_type":"2"}
+{"authorization":["Bearer kgWCSn7Vs8QhwqEEcwAN6mF9gazNVAU6"],"content-type":["application\/json"],"user-agent":["PostmanRuntime\/7.43.3"],"accept":["*\/*"],"cache-control":["no-cache"],"postman-token":["23620a59-d60c-40f2-b872-faa0720fbdb7"],"host":["al_shrouq_express_system.test"],"accept-encoding":["gzip, deflate, br"],"connection":["keep-alive"],"content-length":["229"]}
+-----------------
+{"customer_name":"X X","customer_phone":"966552959559","client_order_id":"458161020","pickup_id":"9999927093","lat":"25.40203578983","lng":"49.551887210198","value":"0","payment_type":"2"}
+{"authorization":["Bearer kgWCSn7Vs8QhwqEEcwAN6mF9gazNVAU6"],"content-type":["application\/json"],"user-agent":["PostmanRuntime\/7.43.3"],"accept":["*\/*"],"cache-control":["no-cache"],"postman-token":["27609004-8e11-41f3-b34f-f4939aa45445"],"host":["al_shrouq_express_system.test"],"accept-encoding":["gzip, deflate, br"],"connection":["keep-alive"],"content-length":["230"]}
+-----------------
+{"customer_name":"X X","customer_phone":"966552959559","client_order_id":"458161021","pickup_id":"9999927093","lat":"25.40203578983","lng":"49.551887210198","value":"0","payment_type":"2"}
+{"authorization":["Bearer kgWCSn7Vs8QhwqEEcwAN6mF9gazNVAU6"],"content-type":["application\/json"],"user-agent":["PostmanRuntime\/7.43.3"],"accept":["*\/*"],"cache-control":["no-cache"],"postman-token":["d830d926-e463-4291-990b-f2a9b2fecb9d"],"host":["al_shrouq_express_system.test"],"accept-encoding":["gzip, deflate, br"],"connection":["keep-alive"],"content-length":["230"]}
+-----------------
+{"customer_name":"X X","customer_phone":"966552959559","client_order_id":"458161021","pickup_id":"9999927093","lat":"25.40203578983","lng":"49.551887210198","value":"0","payment_type":"2"}
+{"authorization":["Bearer kgWCSn7Vs8QhwqEEcwAN6mF9gazNVAU6"],"content-type":["application\/json"],"user-agent":["PostmanRuntime\/7.43.3"],"accept":["*\/*"],"cache-control":["no-cache"],"postman-token":["6c9e379a-b69f-4ea9-9080-25c1ce86bbab"],"host":["al_shrouq_express_system.test"],"accept-encoding":["gzip, deflate, br"],"connection":["keep-alive"],"content-length":["230"]}
+-----------------
+{"customer_name":"X X","customer_phone":"966552959559","client_order_id":"4581610210","pickup_id":"9999927093","lat":"25.40203578983","lng":"49.551887210198","value":"0","payment_type":"2"}
+{"authorization":["Bearer kgWCSn7Vs8QhwqEEcwAN6mF9gazNVAU6"],"content-type":["application\/json"],"user-agent":["PostmanRuntime\/7.43.3"],"accept":["*\/*"],"cache-control":["no-cache"],"postman-token":["56bad8de-a81c-4b3b-93fb-367d33c8e3ca"],"host":["al_shrouq_express_system.test"],"accept-encoding":["gzip, deflate, br"],"connection":["keep-alive"],"content-length":["231"]}
+-----------------
+{"customer_name":"X X","customer_phone":"966552959559","client_order_id":"4581610210","pickup_id":"9999927093","lat":"25.40203578983","lng":"49.551887210198","value":"0","payment_type":"2"}
+{"authorization":["Bearer kgWCSn7Vs8QhwqEEcwAN6mF9gazNVAU6"],"content-type":["application\/json"],"user-agent":["PostmanRuntime\/7.43.3"],"accept":["*\/*"],"cache-control":["no-cache"],"postman-token":["24771cab-19d7-4b90-b09a-6fe72bcdf4a0"],"host":["al_shrouq_express_system.test"],"accept-encoding":["gzip, deflate, br"],"connection":["keep-alive"],"content-length":["231"]}

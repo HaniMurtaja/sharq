@@ -1,0 +1,188 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-color: #F9F9F9;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+.toggle-checkbox:checked+label .toggle-circle {
+    transform: translateX(0.8rem);
+}
+
+.toggle-checkbox:checked+label .toggle-path {
+    background-color: #34C759;
+}
+
+.toggle-checkbox+label .toggle-path {
+    background-color: #DDDDDD;
+}
+
+
+/* ----->> Slider <<------- */
+.login-container {
+    display: flex;
+}
+
+.slider {
+    position: relative;
+
+}
+
+.slides {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+.slide {
+    min-width: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* img {
+    width: 100%;
+    display: block;
+} */
+
+.nav-dots {
+    text-align: center;
+    position: absolute;
+    bottom: -40px;
+    width: 100%;
+}
+
+.dot {
+    cursor: pointer;
+    height: 10px;
+    width: 10px;
+    margin: 0 3px;
+    background-color: #DDDDDD;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.active {
+    background-color: #A30133;
+}
+
+.collapseContent {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.dispatch-tab-active {
+    border-bottom: 1px solid #A30133;
+    color: #A30133;
+    font-weight: 600;
+}
+
+.custom-select {
+    all: unset !important;
+}
+
+input {
+    background-color: transparent !important;
+}
+
+.daterangepicker .drp-buttons .cancelBtn:hover {
+    color: #fff
+}
+
+.daterangepicker .drp-buttons .applyBtn,
+.daterangepicker .drp-buttons .cancelBtn {
+    color: #fff;
+}
+
+.custom-select2-search .select2-container .select2-selection--single {
+    height: 48px !important;
+    border: 1px solid #dee2e6;
+}
+
+.custom-select2-search .select2-container--default .select2-selection--single .select2-selection__clear {
+    height: 48px !important;
+}
+
+.custom-select2-search .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 48px !important;
+}
+
+.custom-select2-search .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 48px !important;
+}
+
+.custom-select2 .select2-container .select2-selection--multiple {
+    min-height: 48px !important;
+    border: 1px solid #dee2e6;
+}
+
+/* Container for the switch */
+.switch-container {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+/* Hidden checkbox */
+.switch-checkbox {
+    display: none;
+}
+
+/* Background of the switch */
+.switch-label {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: #ccc;
+    /* Default background */
+    border-radius: 9999px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+/* Thumb (toggle circle) */
+.switch-button {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+/* Change background color and move the thumb when checked */
+.switch-checkbox:checked+.switch-label {
+    background-color: #A30133;
+    /* Background color when checked */
+}
+
+.switch-checkbox:checked+.switch-label .switch-button {
+    transform: translateX(20px);
+    /* Move thumb to the right when checked */
+}
+
+input {
+    color: #222 !important;
+}
+
+button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.modal-backdrop.fade {
+    display: none !important;
+}

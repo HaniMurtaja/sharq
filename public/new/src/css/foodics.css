@@ -1,0 +1,11 @@
+.dt-layout-row:last-child .dt-info {
+    font-size: 11.2px;
+    color: #585858;
+}
+.dt-layout-row:last-child {
+    display: flex
+;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+}
