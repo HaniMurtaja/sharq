@@ -47,6 +47,40 @@ Route::prefix('admin')->group(function () {
         require_once __DIR__ . '/settings.php';
 
 
+        Route::group(['prefix' => 'accounting', 'middleware' => 'permission:accounting_access'], function () {
+    
+            // Dashboard
+            Route::get('/', [App\Http\Controllers\Admin\AccountingController::class, 'index'])->name('accounting.dashboard');
+            
+            // Clients Management
+            Route::get('/clients', [App\Http\Controllers\Admin\AccountingController::class, 'clients'])->name('accounting.clients');
+            Route::get('/clients/{id}/edit', [App\Http\Controllers\Admin\AccountingController::class, 'editClient'])->name('accounting.clients.edit');
+            Route::put('/clients/{id}', [App\Http\Controllers\Admin\AccountingController::class, 'updateClient'])->name('accounting.clients.update');
+            Route::post('/clients/{id}/suspend', [App\Http\Controllers\Admin\AccountingController::class, 'suspendClient'])->name('accounting.clients.suspend');
+            
+            // Invoices Management
+            Route::get('/invoices', [App\Http\Controllers\Admin\AccountingController::class, 'invoices'])->name('accounting.invoices');
+            Route::get('/invoices/data', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoicesData'])->name('accounting.invoices.data');
+            Route::get('/invoices/{id}', [App\Http\Controllers\Admin\AccountingController::class, 'showInvoice'])->name('accounting.invoices.show');
+            Route::post('/invoices/generate', [App\Http\Controllers\Admin\AccountingController::class, 'generateMonthlyInvoices'])->name('accounting.invoices.generate');
+            Route::post('/invoices/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmInvoice'])->name('accounting.invoices.confirm');
+            Route::get('/invoices/{id}/pdf', [App\Http\Controllers\Admin\AccountingController::class, 'generateInvoicePDF'])->name('accounting.invoices.pdf');
+            Route::post('/invoices/{id}/mark-paid', [App\Http\Controllers\Admin\AccountingController::class, 'markAsPaid'])->name('accounting.invoices.mark-paid');
+            Route::get('/invoices/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportInvoices'])->name('accounting.invoices.export');
+            
+            // Payment Receipts
+            Route::get('/invoices/{id}/receipts', [App\Http\Controllers\Admin\AccountingController::class, 'getPaymentReceipts'])->name('accounting.receipts.get');
+            Route::post('/receipts/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmPaymentReceipt'])->name('accounting.receipts.confirm');
+            
+            // Notifications
+            Route::post('/notifications/overdue', [App\Http\Controllers\Admin\AccountingController::class, 'sendOverdueNotifications'])->name('accounting.notifications.overdue');
+            
+            // Settings
+            Route::get('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'settings'])->name('accounting.settings');
+            Route::put('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'updateSettings'])->name('accounting.settings.update');
+            
+        });
+
         Route::post('/delete-driver-order', [OnlineOrdersController::class, 'deleteDriverOrder']);
 
 
