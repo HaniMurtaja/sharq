@@ -683,6 +683,73 @@
             @endcan
         </li>
 
+        @can('accounting_access')
+        <div class="nav-item">
+    <a class="nav-link {{ request()->routeIs('accounting.*') ? 'active' : '' }}" 
+       data-bs-toggle="collapse" href="#accountingMenu" role="button" 
+       aria-expanded="{{ request()->routeIs('accounting.*') ? 'true' : 'false' }}" 
+       aria-controls="accountingMenu">
+        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fas fa-calculator text-dark opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Accounting</span>
+        <i class="fas fa-chevron-down ms-auto"></i>
+    </a>
+    
+    <div class="collapse {{ request()->routeIs('accounting.*') ? 'show' : '' }}" id="accountingMenu">
+        <ul class="nav ms-4 ps-3">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('accounting.dashboard') ? 'active' : '' }}" 
+                   href="{{ route('accounting.dashboard') }}">
+                    <span class="sidenav-mini-icon">D</span>
+                    <span class="sidenav-normal">Dashboard</span>
+                </a>
+            </li>
+            
+            @can('accounting_view_invoices')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('accounting.invoices*') ? 'active' : '' }}" 
+                   href="{{ route('accounting.invoices') }}">
+                    <span class="sidenav-mini-icon">I</span>
+                    <span class="sidenav-normal">Invoices</span>
+                </a>
+            </li>
+            @endcan
+            
+            @can('accounting_view_clients')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('accounting.clients*') ? 'active' : '' }}" 
+                   href="{{ route('accounting.clients') }}">
+                    <span class="sidenav-mini-icon">C</span>
+                    <span class="sidenav-normal">Clients</span>
+                </a>
+            </li>
+            @endcan
+            
+            @can('accounting_reports')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('accounting.reports*') ? 'active' : '' }}" 
+                   href="#" onclick="alert('Reports feature coming soon')">
+                    <span class="sidenav-mini-icon">R</span>
+                    <span class="sidenav-normal">Reports</span>
+                </a>
+            </li>
+            @endcan
+            
+            @can('accounting_settings')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('accounting.settings*') ? 'active' : '' }}" 
+                   href="{{ route('accounting.settings') }}">
+                    <span class="sidenav-mini-icon">S</span>
+                    <span class="sidenav-normal">Settings</span>
+                </a>
+            </li>
+            @endcan
+        </ul>
+    </div>
+    </div>
+@endcan
+
         <li>
             @can('control_users')
                 <a href="{{ route('users') }}" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right"

@@ -153,4 +153,10 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(Order::class, 'ingr_shop_id');
     }
+
+    public function invoices()
+{
+    return $this->hasMany(ClientInvoice::class, 'client_id');
+}
+
 }

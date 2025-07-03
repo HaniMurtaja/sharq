@@ -102,6 +102,11 @@ class Order extends Model
         return $this->hasMany(OrderLog::class, 'order_id');
     }
 
+    public function invoice()
+{
+    return $this->belongsTo(ClientInvoice::class);
+}
+
     public function getFullInvoiceUrlAttribute()
     {
         $invoice = @$this->invoice_url;

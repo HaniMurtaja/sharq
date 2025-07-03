@@ -16,6 +16,12 @@ class Client extends  User  implements HasMedia
     const  ROLE = 'client';
     protected $table = 'users';
 
+    protected $casts = [
+        'billing_emails' => 'array',
+        'auto_generate_invoice' => 'boolean',
+        'last_invoice_date' => 'date',
+    ];
+
     public function getMorphClass(): string {
         return User::class;
     }
