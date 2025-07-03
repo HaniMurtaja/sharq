@@ -19,6 +19,13 @@ class Kernel extends ConsoleKernel
         // $schedule->command('orderDriverTimeout')->everyMinute();
         $schedule->command('orders:export')->dailyAt('05:00');
 
+        $schedule->command('invoices:generate-monthly')
+        ->monthlyOn(1, '02:00');
+
+       
+        $schedule->command('invoices:send-overdue-notifications')
+        ->dailyAt('09:00');
+
     }
 
     /**
