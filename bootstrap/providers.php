@@ -2,6 +2,7 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    Kreait\Laravel\Firebase\ServiceProvider::class,
-    Mccarlosen\LaravelMpdf\LaravelMpdfServiceProvider::class,
+    App\Providers\AuthServiceProvider::class,
+    App\Providers\EventServiceProvider::class,
+    App\Providers\RouteServiceProvider::class,
 ];

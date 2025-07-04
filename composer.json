@@ -27,12 +27,11 @@
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-medialibrary": "^11.12",
-        "spatie/laravel-permission": "^6.17",
+        "spatie/laravel-permission": "^6.20",
         "spatie/laravel-settings": "^3.4",
         "yajra/laravel-datatables": "^12"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.15",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
@@ -56,7 +55,7 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan clear-compiled --ansi"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -80,7 +79,12 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/sanctum",
+                "livewire/livewire",
+                "spatie/laravel-permission"
+
+            ]
         }
     },
     "config": {

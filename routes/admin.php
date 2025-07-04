@@ -47,7 +47,7 @@ Route::prefix('admin')->group(function () {
         require_once __DIR__ . '/settings.php';
 
 
-        Route::group(['prefix' => 'accounting', 'middleware' => 'permission:accounting_access'], function () {
+      
     
             // Dashboard
             Route::get('/', [App\Http\Controllers\Admin\AccountingController::class, 'index'])->name('accounting.dashboard');
@@ -79,7 +79,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'settings'])->name('accounting.settings');
             Route::put('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'updateSettings'])->name('accounting.settings.update');
             
-        });
+      
 
         Route::post('/delete-driver-order', [OnlineOrdersController::class, 'deleteDriverOrder']);
 
