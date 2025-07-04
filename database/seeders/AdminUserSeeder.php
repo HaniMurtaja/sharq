@@ -26,7 +26,9 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
+        
         $permissions = [
+ 
             'accounting_access',
             'accounting_view_invoices',
             'accounting_create_invoices',
@@ -36,9 +38,20 @@ class AdminUserSeeder extends Seeder
             'accounting_edit_clients',
             'accounting_manage_payments',
             'accounting_settings',
-            'accounting_reports'
+            'accounting_reports',
+     
+            'basic_dispatcher_view',
+            
+ 
+            'show_dashboard',
+            'control_clients',
+            'control_clients_groups',
+            'control_branch_groups',
+            'control_areas_zones',
+            'control_clients_wallet_option',
         ];
 
+       
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
@@ -46,19 +59,19 @@ class AdminUserSeeder extends Seeder
             ]);
         }
 
-        
+
         $adminRole = Role::firstOrCreate([
             'name' => 'Admin',
             'guard_name' => 'web'
         ]);
 
-        
+
         $adminRole->givePermissionTo($permissions);
 
-        
+ 
         $admin->assignRole('Admin');
 
-       
+    
         $admin->givePermissionTo($permissions);
 
         $this->command->info('Admin user created successfully!');

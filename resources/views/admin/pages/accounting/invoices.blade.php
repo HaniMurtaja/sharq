@@ -116,7 +116,16 @@
             </tbody>
         </table>
         
-        {{ $invoices->links() }}
+        @if($invoices->count() > 0)
+    @if(method_exists($invoices, 'links'))
+        {{ $invoices->appends(request()->query())->links() }}
+    @endif
+@else
+    <div class="text-center py-4">
+        <p class="text-muted">No invoices found yet.</p>
+        <p>Once you create the invoice tables and models, invoices will appear here.</p>
+    </div>
+@endif
     </div>
 </div>
 

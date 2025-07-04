@@ -24,10 +24,7 @@ use App\Http\Controllers\Admin\ReasonsController;
 use App\Http\Controllers\Admin\ReportNewController;
 use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\ClientsGroupNewController;
-
-
 use App\Http\Controllers\Admin\ZoneNewController;
-
 use App\Http\Controllers\Api\FoodicsOrderController;
 use App\Http\Controllers\Admin\ExportController;
 use Maatwebsite\Excel\Facades\Excel;
@@ -35,8 +32,6 @@ use Maatwebsite\Excel\Facades\Excel;
 Livewire::setUpdateRoute(function ($handle) {
     return Route::post('/livewire/update', $handle)->name('update-livewire');
 });
-
-
 
 Route::prefix('admin')->group(function () {
     Route::get('test_fathy', [AuthController::class, 'test_fathy']);
@@ -46,74 +41,73 @@ Route::prefix('admin')->group(function () {
     Route::middleware('auth')->group(function () {
         require_once __DIR__ . '/settings.php';
 
-
-      
-    
+        // Accounting routes - Fixed with proper middleware
+        Route::prefix('accounting')->name('accounting.')->group(function () {
             // Dashboard
-            Route::get('/', [App\Http\Controllers\Admin\AccountingController::class, 'index'])->name('accounting.dashboard');
+            Route::get('/', [App\Http\Controllers\Admin\AccountingController::class, 'index'])->name('dashboard');
             
             // Clients Management
-            Route::get('/clients', [App\Http\Controllers\Admin\AccountingController::class, 'clients'])->name('accounting.clients');
-            Route::get('/clients/{id}/edit', [App\Http\Controllers\Admin\AccountingController::class, 'editClient'])->name('accounting.clients.edit');
-            Route::put('/clients/{id}', [App\Http\Controllers\Admin\AccountingController::class, 'updateClient'])->name('accounting.clients.update');
-            Route::post('/clients/{id}/suspend', [App\Http\Controllers\Admin\AccountingController::class, 'suspendClient'])->name('accounting.clients.suspend');
+            Route::get('/clients', [App\Http\Controllers\Admin\AccountingController::class, 'clients'])->name('clients');
+            Route::get('/clients/{id}/edit', [App\Http\Controllers\Admin\AccountingController::class, 'editClient'])->name('clients.edit');
+            Route::put('/clients/{id}', [App\Http\Controllers\Admin\AccountingController::class, 'updateClient'])->name('clients.update');
+            Route::post('/clients/{id}/suspend', [App\Http\Controllers\Admin\AccountingController::class, 'suspendClient'])->name('clients.suspend');
+            Route::post('/clients/{id}/reactivate', [App\Http\Controllers\Admin\AccountingController::class, 'reactivateClient'])->name('clients.reactivate');
+            Route::get('/clients/{clientId}/invoice-history', [App\Http\Controllers\Admin\AccountingController::class, 'getClientInvoiceHistory'])->name('clients.invoice-history');
+            Route::get('/clients/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportClients'])->name('clients.export');
             
             // Invoices Management
-            Route::get('/invoices', [App\Http\Controllers\Admin\AccountingController::class, 'invoices'])->name('accounting.invoices');
-            Route::get('/invoices/data', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoicesData'])->name('accounting.invoices.data');
-            Route::get('/invoices/{id}', [App\Http\Controllers\Admin\AccountingController::class, 'showInvoice'])->name('accounting.invoices.show');
-            Route::post('/invoices/generate', [App\Http\Controllers\Admin\AccountingController::class, 'generateMonthlyInvoices'])->name('accounting.invoices.generate');
-            Route::post('/invoices/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmInvoice'])->name('accounting.invoices.confirm');
-            Route::get('/invoices/{id}/pdf', [App\Http\Controllers\Admin\AccountingController::class, 'generateInvoicePDF'])->name('accounting.invoices.pdf');
-            Route::post('/invoices/{id}/mark-paid', [App\Http\Controllers\Admin\AccountingController::class, 'markAsPaid'])->name('accounting.invoices.mark-paid');
-            Route::get('/invoices/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportInvoices'])->name('accounting.invoices.export');
+            Route::get('/invoices', [App\Http\Controllers\Admin\AccountingController::class, 'invoices'])->name('invoices');
+            Route::get('/invoices/data', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoicesData'])->name('invoices.data');
+            Route::get('/invoices/{id}', [App\Http\Controllers\Admin\AccountingController::class, 'showInvoice'])->name('invoices.show');
+            Route::post('/invoices/generate', [App\Http\Controllers\Admin\AccountingController::class, 'generateMonthlyInvoices'])->name('invoices.generate');
+            Route::post('/invoices/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmInvoice'])->name('invoices.confirm');
+            Route::get('/invoices/{id}/pdf', [App\Http\Controllers\Admin\AccountingController::class, 'generateInvoicePDF'])->name('invoices.pdf');
+            Route::post('/invoices/{id}/mark-paid', [App\Http\Controllers\Admin\AccountingController::class, 'markAsPaid'])->name('invoices.mark-paid');
+            Route::post('/invoices/{id}/resend', [App\Http\Controllers\Admin\AccountingController::class, 'resendInvoice'])->name('invoices.resend');
+            Route::get('/invoices/{id}/logs', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoiceLogs'])->name('invoices.logs');
+            Route::get('/invoices/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportInvoices'])->name('invoices.export');
+            Route::post('/invoices/bulk-actions', [App\Http\Controllers\Admin\AccountingController::class, 'bulkInvoiceActions'])->name('invoices.bulk-actions');
             
             // Payment Receipts
-            Route::get('/invoices/{id}/receipts', [App\Http\Controllers\Admin\AccountingController::class, 'getPaymentReceipts'])->name('accounting.receipts.get');
-            Route::post('/receipts/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmPaymentReceipt'])->name('accounting.receipts.confirm');
+            Route::get('/invoices/{id}/receipts', [App\Http\Controllers\Admin\AccountingController::class, 'getPaymentReceipts'])->name('receipts.get');
+            Route::post('/receipts/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmPaymentReceipt'])->name('receipts.confirm');
             
             // Notifications
-            Route::post('/notifications/overdue', [App\Http\Controllers\Admin\AccountingController::class, 'sendOverdueNotifications'])->name('accounting.notifications.overdue');
+            Route::post('/notifications/overdue', [App\Http\Controllers\Admin\AccountingController::class, 'sendOverdueNotifications'])->name('notifications.overdue');
             
             // Settings
-            Route::get('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'settings'])->name('accounting.settings');
-            Route::put('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'updateSettings'])->name('accounting.settings.update');
+            Route::get('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'settings'])->name('settings');
+            Route::put('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'updateSettings'])->name('settings.update');
             
-      
+            // Reports
+            Route::get('/reports', [App\Http\Controllers\Admin\AccountingController::class, 'getAccountingReports'])->name('reports');
+            Route::get('/dashboard-data', [App\Http\Controllers\Admin\AccountingController::class, 'getDashboardData'])->name('dashboard.data');
+        });
+
+        // Payment gateway routes (outside accounting group)
+        Route::post('/payment/invoice/{invoiceId}/tap-callback', [App\Http\Controllers\Admin\AccountingController::class, 'processTapPayment'])->name('payment.tap.callback');
 
         Route::post('/delete-driver-order', [OnlineOrdersController::class, 'deleteDriverOrder']);
 
-
-
         // sidebar routes
-
         Route::get('operators', [HomeController::class, 'operators'])->name('operators');
-        //Route::get('clients', [HomeController::class, 'clients'])->name('clients');
         Route::get('users', [HomeController::class, 'users'])->name('users');
         Route::get('vehicles', [HomeController::class, 'vehicles'])->name('vehicles');
-
         Route::get('messages', [HomeController::class, 'messages'])->name('messages');
-
         Route::get('locations', [HomeController::class, 'locations'])->name('locations');
 
-
         //pages routes
-
         Route::get('shifts', [OperatorController::class, 'shiftsList'])->name('shifts');
         Route::get('update-shifts/{id?}', [OperatorController::class, 'updateShift'])->name('update-shifts');
         Route::post('edit-shift/{id}', [OperatorController::class, 'editShift'])->name('edit-shift');
         Route::post('save-shift/{id?}', [OperatorController::class, 'saveShift'])->name('save-shift');
         Route::delete('delete-shift/{id}', [OperatorController::class, 'deleteShift'])->name('delete-shift');
 
-
-
         Route::get('groups', [OperatorController::class, 'groupsList'])->name('groups');
         Route::post('save-group', [OperatorController::class, 'saveGroup'])->name('save-group');
         Route::get('update-group/{id?}', [OperatorController::class, 'updateGroup'])->name('update-group');
         Route::post('edit-group/{id}', [OperatorController::class, 'editGroup'])->name('edit-group');
-
         Route::delete('delete-group/{id}', [OperatorController::class, 'deleteGroup'])->name('delete-group');
-
 
         Route::get('operators-list', [OperatorController::class, 'operatorsList'])->name('operators-list');
         Route::post('save-operator', [OperatorController::class, 'saveOperator'])->name('save-operator');
@@ -122,18 +116,13 @@ Route::prefix('admin')->group(function () {
         Route::delete('delete-operator/{id}', [OperatorController::class, 'deleteOperator'])->name('delete-operator');
 
         Route::post('change-operator-verification_status', [OperatorController::class, 'changeOperatorVerificationStatus'])->name('changeOperatorVerificationStatus');
-
-
-         Route::get('get-verification-data/{id}', [OperatorController::class, 'getVerificationData'])->name('getVerificationData');
-
-
+        Route::get('get-verification-data/{id}', [OperatorController::class, 'getVerificationData'])->name('getVerificationData');
 
         Route::get('vehicle-list', [VehicleController::class, 'vehicleList'])->name('vehicle-list');
         Route::post('save-vehicles', [VehicleController::class, 'save'])->name('save-vehicles');
         Route::get('update-vehicle/{id}', [VehicleController::class, 'update'])->name('update-vehicle');
         Route::post('edit-vehicle/{id}', [VehicleController::class, 'edit'])->name('edit-vehicle');
         Route::delete('delete-vehicle/{id}', [VehicleController::class, 'delete'])->name('delete-vehicle');
-
 
         Route::get('branches-list', [ClientsController::class, 'branchesList'])->name('branches-list');
         Route::post('save-branch', [ClientsController::class, 'saveBranch'])->name('save-branch');
@@ -142,22 +131,17 @@ Route::prefix('admin')->group(function () {
         Route::delete('delete-branch/{id}', [ClientsController::class, 'deleteBranch'])->name('delete-branch');
         Route::get('branch/{id}', [ClientsController::class, 'getBranch'])->name('get-branch');
 
-
-
-
         Route::get('clients-group-list', [ClientsController::class, 'clientsGroupList'])->name('clients-group-list');
         Route::post('save-clients-group', [ClientsController::class, 'saveClientsGroup'])->name('save-clients-group');
         Route::get('edit-clients-group/{id}/edit', [ClientsController::class, 'editClientsGroup'])->name('edit-clients-group');
         Route::put('update-clients-group/{id}', [ClientsController::class, 'updateClientsGroup'])->name('update-clients-group');
         Route::delete('delete-clients-group/{id}', [ClientsController::class, 'deleteClientsGroup'])->name('delete-clients-group');
 
-
         Route::get('zone-list', [ClientsController::class, 'zoneList'])->name('zone-list');
         Route::post('save-zone', [ClientsController::class, 'saveZone'])->name('save-zone');
         Route::get('edit-zone/{id}/edit', [ClientsController::class, 'editZone'])->name('edit-zone');
         Route::put('update-zone/{id}', [ClientsController::class, 'updateZone'])->name('update-zone');
         Route::delete('delete-zone/{id}', [ClientsController::class, 'deleteZone'])->name('delete-zone');
-
 
         Route::get('client-list', [ClientsController::class, 'clientList'])->name('client-list');
         Route::post('save-client', [ClientsController::class, 'saveClient'])->name('save-client');
@@ -168,15 +152,12 @@ Route::prefix('admin')->group(function () {
 
         Route::post('save-client-branch', [ClientsController::class, 'saveClientBranch'])->name('save-client-branch');
         Route::get('get-client-branches', [ClientsController::class, 'getBranches'])->name('get-client-branches');
-
         Route::get('get-client-orders', [ClientsController::class, 'getOrders'])->name('get-client-orders');
-
 
         Route::post('charge-client-wallet', [ClientsController::class, 'chargeWallet'])->name('charge-client-wallet');
 
         Route::get('change-client-branch-status', [ClientsController::class, 'changeClientBranchStatus'])->name('change-client-branch-status');
         Route::post('change-client-branch-auto-dispatch', [ClientsController::class, 'changeClientBranchAutoDispatch'])->name('change-client-branch-auto-dispatch');
-
 
         Route::post('save-client-user', [ClientsController::class, 'saveClientUser'])->name('save-client-user');
         Route::get('get-client-users', [ClientsController::class, 'getUsers'])->name('get-client-users');
@@ -190,11 +171,10 @@ Route::prefix('admin')->group(function () {
 
         Route::get('getBranchOfMaster', [ClientsController::class, 'getBranchOfMaster'])->name('getBranchOfMaster');
         Route::get('maps', [MapsController::class, 'Maps'])->name('getMaps');
-        Route::get('/api/map-data', [MapsController::class, 'getMapData'])->name('getMapDataNew');;
+        Route::get('/api/map-data', [MapsController::class, 'getMapData'])->name('getMapDataNew');
         Route::get('geoapify', [MapsController::class, 'geoapify'])->name('geoapify');
         Route::get('google', [MapsController::class, 'google'])->name('google');
         Route::get('googlemap', [MapsController::class, 'googlemap'])->name('googlemap');
-
 
         Route::get('user-list', [UserController::class, 'usertList'])->name('user-list');
         Route::post('save-user', [UserController::class, 'saveUser'])->name('save-user');
@@ -202,9 +182,7 @@ Route::prefix('admin')->group(function () {
         Route::put('update-user/{id}', [UserController::class, 'updateUser'])->name('update-user');
         Route::delete('delete-user/{id}', [UserController::class, 'deleteUser'])->name('delete-user');
 
-
         Route::get('export-users-template', [UserController::class, 'exportUserTemplate'])->name('exportUserTemplate');
-
 
         Route::get('template-list', [UserController::class, 'templateList'])->name('template-list');
         Route::post('save-template', [UserController::class, 'saveTemplate'])->name('save-template');
@@ -212,15 +190,11 @@ Route::prefix('admin')->group(function () {
         Route::put('update-template/{id}', [UserController::class, 'updateTemplate'])->name('update-template');
         Route::delete('delete-template/{id}', [UserController::class, 'deleteTemplate'])->name('delete-template');
 
-
-
-
         Route::get('country-list', [LocationController::class, 'countryList'])->name('country-list');
         Route::post('save-country', [LocationController::class, 'saveCountry'])->name('save-country');
         Route::get('edit-country/{id}/edit', [LocationController::class, 'editCountry'])->name('edit-country');
         Route::put('update-country/{id}', [LocationController::class, 'updateCountry'])->name('update-country');
         Route::delete('delete-country/{id}', [LocationController::class, 'deleteCountry'])->name('delete-country');
-
 
         Route::get('city-list', [LocationController::class, 'cityList'])->name('city-list');
         Route::post('save-city', [LocationController::class, 'saveCity'])->name('save-city');
@@ -228,40 +202,22 @@ Route::prefix('admin')->group(function () {
         Route::put('update-city/{id}', [LocationController::class, 'updateCity'])->name('update-city');
         Route::delete('delete-city/{id}', [LocationController::class, 'deleteCity'])->name('delete-city');
 
-
         Route::get('area-list', [LocationController::class, 'areaList'])->name('area-list');
         Route::post('save-area', [LocationController::class, 'saveArea'])->name('save-area');
         Route::get('edit-area/{id}/edit', [LocationController::class, 'editArea'])->name('edit-area');
         Route::put('update-area/{id}', [LocationController::class, 'updateArea'])->name('update-area');
         Route::delete('delete-area/{id}', [LocationController::class, 'deleteArea'])->name('delete-area');
 
-
-
         Route::get('city-areas', [LocationController::class, 'cityAreas'])->name('city-areas');
 
-
-
-
-
-
         Route::post('get-calculation-method', [ClientsController::class, 'getCalculationMethod'])->name('get-calculation-method');
-
-
-
-
-
 
         Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
         Route::get('get-charts', [DashboardController::class, 'getCharts'])->name('get-charts');
         Route::get('get-charts-new', [DashboardController::class, 'getChartsNew'])->name('get-charts-new');
 
-
         // Route::get('/', [HomeController::class, 'index'])->name('index');
-// 
-        
         Route::get('/', [MapsController::class, 'geoapify'])->name('index');
-
-
 
         Route::get('/select-user', [HomeController::class, 'select_user'])->name('select_user');
         Route::get('/search_order', [HomeController::class, 'search_order'])->name('search_order');
@@ -269,26 +225,21 @@ Route::prefix('admin')->group(function () {
         Route::get('reports', [HomeController::class, 'reports'])->name('reports');
         Route::get('reports/driver-reports', [HomeController::class, 'driver_reports'])->name('reports.driver-reports');
 
-
         Route::get('billings', [ReportController::class, 'billings'])->name('reports.billings');
         Route::get('get-billings-report', [ReportController::class, 'getBillingsData'])->name('get-billings-report');
         Route::get('get-cod-billings-report', [ReportController::class, 'getCodBillingsData'])->name('get-cod-billings-report');
 
         Route::get('operators/operator-reports', [ReportController::class, 'operatorReports'])->name('operators.operator-reports');
-
         Route::get('operators/get-operator-reports', [ReportController::class, 'getoperatorReports'])->name('operators.get-operator-reports');
         Route::post('save-operator-reports-history', [ReportController::class, 'saveOperatorReportHistory'])->name('save-operator-reports-history');
 
         Route::get('export-operators/{id}', [ReportController::class, 'exportOperators'])->name('export-operators');
         Route::get('export-vehicles/{id}', [ReportController::class, 'exportVehicle'])->name('export-vehicle');
 
-
         Route::get('report-citys', [ReportController::class, 'reportCitys'])->name('reports.reportCitys');
 
         Route::get('settings', [HomeController::class, 'settings'])->name('settings');
-
         Route::get('logout', [HomeController::class, 'logout'])->name('logout');
-
         Route::get('orders', [HomeController::class, 'orders'])->name('orders');
 
 
