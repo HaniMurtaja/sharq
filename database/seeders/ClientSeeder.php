@@ -14,7 +14,7 @@ class ClientSeeder extends Seeder
 {
     public function run(): void
     {
-        
+        // Create client role
         Role::firstOrCreate(['name' => 'client', 'guard_name' => 'web']);
 
         $clients = [
@@ -117,7 +117,7 @@ class ClientSeeder extends Seeder
         ];
 
         foreach ($clients as $clientData) {
-           
+  
             $user = User::create([
                 'first_name' => $clientData['first_name'],
                 'last_name' => $clientData['last_name'],
@@ -130,7 +130,6 @@ class ClientSeeder extends Seeder
                 'country_id' => 2,
             ]);
 
-           
             $client = Client::create([
                 'user_id' => $user->id, 
                 'account_number' => $clientData['client_data']['account_number'],
@@ -141,7 +140,7 @@ class ClientSeeder extends Seeder
                 'payment_terms' => $clientData['client_data']['payment_terms'],
                 'currency' => $clientData['client_data']['currency'],
                 'last_invoice_date' => null,
-              
+
                 'city_id' => 1, 
                 'default_prepartion_time' => '30',
                 'min_prepartion_time' => '15',
@@ -153,10 +152,18 @@ class ClientSeeder extends Seeder
 
             $user->assignRole('client');
 
-            Wallet::create([
-                'user_id' => $user->id,
-                'balance' => rand(1000, 50000), 
-            ]);
+           
+            try {
+              
+                Wallet::create([
+                    'user_id' => $user->id,
+                    'balance' => rand(1000, 50000), 
+                ]);
+            } catch (\Exception $e) {
+              
+                $this->command->warn("Could not create wallet with user_id for client {$user->id}: " . $e->getMessage());
+                $this->command->info("Skipping wallet creation for client. You may need to create a separate wallet table for clients.");
+            }
 
             $this->command->info("Created client: {$clientData['first_name']} {$clientData['last_name']} (ID: {$user->id})");
         }

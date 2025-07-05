@@ -145,6 +145,17 @@ class User extends Authenticatable implements HasMedia
 
     public function wallet()
     {
-        return $this->hasOne(Wallet::class);
+        // For clients (user_role = 2), use user_id
+        if ($this->user_role == 2) {
+            return $this->hasOne(Wallet::class, 'user_id');
+        }
+        
+        // For operators (user_role = 3), use operator_id  
+        if ($this->user_role == 3) {
+            return $this->hasOne(Wallet::class, 'operator_id');
+        }
+
+        // Default to user_id for other roles
+        return $this->hasOne(Wallet::class, 'user_id');
     }
 }
