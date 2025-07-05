@@ -13,21 +13,16 @@ return new class extends Migration
     {
         Schema::create('company_financial_settings', function (Blueprint $table) {
             $table->id();
-
             $table->string('company_name');
-
             $table->string('tax_id')->nullable();
             $table->string('commercial_registration')->nullable();
-            
             $table->text('address')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('bank_account')->nullable();
             $table->string('iban')->nullable();
-
-            $table->json('additional_fields')->nullable(); 
-            $table->integer('payment_due_days')->default(3);
-
+            $table->integer('payment_due_days')->default(30);
+            $table->json('additional_fields')->nullable();
             $table->timestamps();
         });
     }

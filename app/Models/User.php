@@ -159,4 +159,11 @@ class User extends Authenticatable implements HasMedia
     return $this->hasMany(ClientInvoice::class, 'client_id');
 }
 
+
+public function wallet()
+{
+    return $this->hasOne(Wallet::class);
+}
+
+
 }

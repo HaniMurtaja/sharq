@@ -20,7 +20,12 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         // $this->call(FirebaseBranchesSeeder::class);
-
-         $this->call(OperatorCitiesSeeder::class);
+        $this->call([
+            RolePermissionSeeder::class,
+            CompanyFinancialSettingsSeeder::class,
+            ClientSeeder::class,
+            InvoiceSeeder::class,
+        ]);
+      
     }
 }

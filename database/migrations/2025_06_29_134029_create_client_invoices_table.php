@@ -13,28 +13,25 @@ return new class extends Migration
     {
         Schema::create('client_invoices', function (Blueprint $table) {
             $table->id();
-
-            $table->string('invoice_number')->unique();
             $table->foreignId('client_id')->constrained('users')->onDelete('cascade');
+            $table->string('invoice_number')->unique();
             $table->date('invoice_date');
             $table->date('due_date');
-
-            $table->enum('status', ['generated_under_review', 'confirmed_sent_unpaid', 'paid'])->default('generated_under_review');
-
-            $table->decimal('subtotal', 15, 2)->default(0);
-            $table->decimal('tax_amount', 15, 2)->default(0);
-            $table->decimal('total_amount', 15, 2)->default(0);
+            $table->enum('status', ['generated_under_review', 'confirmed_sent_unpaid', 'paid'])
+                  ->default('generated_under_review');
+            $table->decimal('subtotal', 10, 2)->default(0);
+            $table->decimal('tax_amount', 10, 2)->default(0);
+            $table->decimal('total_amount', 10, 2)->default(0);
             $table->string('currency', 3)->default('SAR');
-            
+            $table->json('client_emails')->nullable();
             $table->text('notes')->nullable();
-            $table->json('zatca_qr_data')->nullable(); 
-            $table->string('qr_code_path')->nullable();
-            $table->json('client_emails')->nullable(); 
-
+            $table->string('payment_token')->nullable();
+            $table->text('zatca_qr_code')->nullable();
             $table->timestamps();
-            
-            $table->index(['client_id', 'status']);
-            $table->index('due_date');
+
+            $table->index(['client_id', 'invoice_date']);
+            $table->index(['status']);
+            $table->index(['due_date']);
         });
     }
 

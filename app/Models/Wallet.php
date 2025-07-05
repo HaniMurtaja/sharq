@@ -2,29 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Wallet extends Model
 {
     use HasFactory;
-    protected $table = 'wallets';
+
     protected $fillable = [
-        'operator_id',
-        'balance',
-        'currency',
+        'user_id',
+        'balance'
     ];
 
     protected $casts = [
-        'balance' => 'decimal:2', 
+        'balance' => 'decimal:2'
     ];
-
-    /**
-     * Get the operator that owns the wallet.
-     */
-    public function operator(): BelongsTo
+    
+    public function user()
     {
-        return $this->belongsTo(Operator::class, 'operator_id');
+        return $this->belongsTo(User::class);
     }
 }

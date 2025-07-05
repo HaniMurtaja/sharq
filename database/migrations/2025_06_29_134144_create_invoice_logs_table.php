@@ -13,17 +13,15 @@ return new class extends Migration
     {
         Schema::create('invoice_logs', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('invoice_id')->constrained('client_invoices')->onDelete('cascade');
-            $table->string('action'); 
-            $table->foreignId('user_id')->nullable()->constrained('users'); 
-
-            $table->json('old_data')->nullable(); 
-            $table->json('new_data')->nullable(); 
-
+            $table->string('action');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->json('old_data')->nullable();
+            $table->json('new_data')->nullable();
             $table->text('notes')->nullable();
-            
             $table->timestamps();
+
+            $table->index(['invoice_id', 'created_at']);
         });
     }
 
