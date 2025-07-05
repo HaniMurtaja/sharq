@@ -9,15 +9,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-
 use Spatie\MediaLibrary\HasMedia;
-
-
 
 class User extends Authenticatable implements HasMedia
 {
@@ -25,11 +20,6 @@ class User extends Authenticatable implements HasMedia
     use HasApiTokens, HasFactory, InteractsWithMedia;
     use SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'first_name',
         'last_name',
@@ -45,8 +35,8 @@ class User extends Authenticatable implements HasMedia
         'branch_id',
         'is_active',
         'deleted_by',
-        'country_id'
-
+        'country_id',
+        'balance'
     ];
 
     protected $appends = ['full_name', 'image', 'image_url'];
@@ -56,10 +46,10 @@ class User extends Authenticatable implements HasMedia
         'remember_token',
     ];
 
-
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'user_role' => UserRole::class
+        'user_role' => UserRole::class,
+        'balance' => 'decimal:2'
     ];
 
     public function getFullNameAttribute()
@@ -67,26 +57,19 @@ class User extends Authenticatable implements HasMedia
         return "{$this->first_name} {$this->last_name}";
     }
 
-
     public function country() {
         return $this->belongsTo(Country::class, 'country_id');
     }
 
     public function getImageAttribute()
     {
-
         $image = @$this->attributes['image'];
-
-
         return $image ? env('IMAGE_URL') . $image : null;
     }
+
     public function getImageUrlAttribute()
     {
-
         $image = @$this->attributes['image'];
-
-
-        // return asset('maps/Capture2.PNG');
         return $image ? env('IMAGE_URL') . $image : null;
     }
 
@@ -99,6 +82,7 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(UserGroups::class, 'user_id');
     }
+
     public function getUserCitys()
     {
         return $this->hasMany(UserCitys::class, 'user_id');
@@ -114,12 +98,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasOne(OperatorDetail::class, 'operator_id', 'id');
     }
 
-
     public function client()
     {
-
-        return $this->hasOne(ClientDetail::class, 'user_id');
+        return $this->hasOne(Client::class, 'user_id', 'id');
     }
+
     public function notifications()
     {
         return $this->hasMany(UserNotification::class, 'user_id');
@@ -130,11 +113,11 @@ class User extends Authenticatable implements HasMedia
         return $this->notifications()->where('is_read', 0);
     }
 
-
     public function branch()
     {
         return $this->belongsTo(ClientBranches::class, 'branch_id');
     }
+
     public function getOperatorDetail()
     {
         return $this->hasOne(OperatorDetail::class, 'operator_id');
@@ -149,21 +132,19 @@ class User extends Authenticatable implements HasMedia
             ->whereNotNull('driver_accepted_time')->whereDate('created_at', ">=", $yesterday)
             ->WhereDate('created_at', "<=", $today);
     }
+
     public function ClientOrders()
     {
         return $this->hasMany(Order::class, 'ingr_shop_id');
     }
 
     public function invoices()
-{
-    return $this->hasMany(ClientInvoice::class, 'client_id');
-}
+    {
+        return $this->hasMany(ClientInvoice::class, 'client_id');
+    }
 
-
-public function wallet()
-{
-    return $this->hasOne(Wallet::class);
-}
-
-
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
 }

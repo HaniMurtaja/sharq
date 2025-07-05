@@ -1,40 +1,18 @@
 <?php
 
-namespace App\Models;
+namespace Database\Seeders;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Seeder;
+use App\Models\CompanyFinancialSetting;
 
-class CompanyFinancialSetting extends Model
+class CompanyFinancialSettingsSeeder extends Seeder
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'company_name',
-        'tax_id',
-        'commercial_registration',
-        'address',
-        'phone',
-        'email',
-        'bank_account',
-        'iban',
-        'payment_due_days',
-        'additional_fields'
-    ];
-
-    protected $casts = [
-        'additional_fields' => 'array',
-        'payment_due_days' => 'integer'
-    ];
-
-   
-    public static function getSettings()
+    public function run()
     {
-        $settings = self::first();
         
-        if (!$settings) {
-           
-            $settings = self::create([
+        CompanyFinancialSetting::updateOrCreate(
+            ['id' => 1], 
+            [
                 'company_name' => 'Al Shrouq Express Delivery',
                 'tax_id' => '300012345600003',
                 'commercial_registration' => '1010123456',
@@ -45,9 +23,9 @@ class CompanyFinancialSetting extends Model
                 'iban' => 'SA0312345678901234567890',
                 'payment_due_days' => 30,
                 'additional_fields' => []
-            ]);
-        }
-        
-        return $settings;
+            ]
+        );
+
+        $this->command->info('Company financial settings created successfully!');
     }
 }

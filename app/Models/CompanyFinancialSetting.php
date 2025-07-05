@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CompanyFinancialSetting extends Model
@@ -17,8 +18,8 @@ class CompanyFinancialSetting extends Model
         'email',
         'bank_account',
         'iban',
-        'additional_fields',
-        'payment_due_days'
+        'payment_due_days',
+        'additional_fields'
     ];
 
     protected $casts = [
@@ -28,9 +29,23 @@ class CompanyFinancialSetting extends Model
 
     public static function getSettings()
     {
-        return self::first() ?? self::create([
-            'company_name' => config('app.name', 'Al Shrouq Express'),
-            'payment_due_days' => 3
-        ]);
+        $settings = self::first();
+        
+        if (!$settings) {
+            $settings = self::create([
+                'company_name' => 'Al Shrouq Express Delivery',
+                'tax_id' => '300012345600003',
+                'commercial_registration' => '1010123456',
+                'address' => 'King Fahd Road, Al Olaya District, Riyadh 12613, Saudi Arabia',
+                'phone' => '+966-11-123-4567',
+                'email' => 'info@alshrouqexpress.com',
+                'bank_account' => '123456789012',
+                'iban' => 'SA0312345678901234567890',
+                'payment_due_days' => 30,
+                'additional_fields' => []
+            ]);
+        }
+        
+        return $settings;
     }
 }

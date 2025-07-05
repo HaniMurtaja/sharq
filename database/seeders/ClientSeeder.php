@@ -8,14 +8,15 @@ use App\Models\User;
 use App\Models\Client;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class ClientSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        
+        Role::firstOrCreate(['name' => 'client', 'guard_name' => 'web']);
+
         $clients = [
             [
                 'first_name' => 'McDonald\'s',
@@ -116,7 +117,7 @@ class ClientSeeder extends Seeder
         ];
 
         foreach ($clients as $clientData) {
-
+           
             $user = User::create([
                 'first_name' => $clientData['first_name'],
                 'last_name' => $clientData['last_name'],
@@ -126,30 +127,38 @@ class ClientSeeder extends Seeder
                 'user_role' => $clientData['user_role'],
                 'is_active' => $clientData['is_active'],
                 'email_verified_at' => now(),
+                'country_id' => 2,
             ]);
 
            
-            $client = new Client();
-            $client->id = $user->id; 
-            $client->account_number = $clientData['client_data']['account_number'];
-            $client->company_name = $clientData['client_data']['company_name'];
-            $client->billing_emails = $clientData['client_data']['billing_emails'];
-            $client->auto_generate_invoice = $clientData['client_data']['auto_generate_invoice'];
-            $client->invoice_template_notes = $clientData['client_data']['invoice_template_notes'];
-            $client->payment_terms = $clientData['client_data']['payment_terms'];
-            $client->currency = $clientData['client_data']['currency'];
-            $client->last_invoice_date = null;
-            $client->save();
+            $client = Client::create([
+                'user_id' => $user->id, 
+                'account_number' => $clientData['client_data']['account_number'],
+                'company_name' => $clientData['client_data']['company_name'],
+                'billing_emails' => $clientData['client_data']['billing_emails'],
+                'auto_generate_invoice' => $clientData['client_data']['auto_generate_invoice'],
+                'invoice_template_notes' => $clientData['client_data']['invoice_template_notes'],
+                'payment_terms' => $clientData['client_data']['payment_terms'],
+                'currency' => $clientData['client_data']['currency'],
+                'last_invoice_date' => null,
+              
+                'city_id' => 1, 
+                'default_prepartion_time' => '30',
+                'min_prepartion_time' => '15',
+                'partial_pay' => null,
+                'note' => 'Created by accounting seeder',
+                'client_group_id' => null,
+                'driver_group_id' => null,
+            ]);
 
             $user->assignRole('client');
 
-         
             Wallet::create([
                 'user_id' => $user->id,
                 'balance' => rand(1000, 50000), 
             ]);
 
-            $this->command->info("Created client: {$clientData['first_name']} {$clientData['last_name']}");
+            $this->command->info("Created client: {$clientData['first_name']} {$clientData['last_name']} (ID: {$user->id})");
         }
     }
 }
