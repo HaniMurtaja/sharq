@@ -52,7 +52,7 @@
 </style>
 
 <body>
-    <main class="container-fluid">
+    <main class="container-fluid d-flex flex-column min-vh-100">
 
         <div class="relative flex transition-all h-full layoutContainer">
             @include('admin.includes.sidebar')
