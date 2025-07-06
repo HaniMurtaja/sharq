@@ -695,58 +695,44 @@
         </li>
 
         <!-- ACCOUNTING MENU ITEM -->
-        <li class="dropdown">
-            @can('accounting_access')
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
-                    data-bs-toggle="tooltip" data-bs-placement="right" title="Accounting">
-                    <span class="tooltip-element" data-bs-toggle="tooltip" data-bs-placement="right"
-                        title="Accounting"></span>
-
-                    <svg width="23.6px" height="23.6px" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" 
-                              fill="#F46624"/>
-                        <path d="M7 7h10v2H7zm0 4h10v2H7zm0 4h7v2H7z" 
-                              fill="#f9f9f9"/>
-                    </svg>
-                    <span class="menuMobileItem">Accounting</span>
-                </a>
-
-                <ul class="dropdown-menu text-small shadow reportsSideMenu accounting-menu">
-                    <li><a class="dropdown-item {{ request()->routeIs('accounting.dashboard') ? 'active' : '' }}" 
-                           href="{{ route('accounting.dashboard') }}">
-                        Dashboard
-                    </a></li>
-                    
-                    @can('accounting_view_invoices')
-                    <li><a class="dropdown-item {{ request()->routeIs('accounting.invoices*') ? 'active' : '' }}" 
-                           href="{{ route('accounting.invoices') }}">
-                        Invoices
-                    </a></li>
-                    @endcan
-                    
-                    @can('accounting_view_clients')
-                    <li><a class="dropdown-item {{ request()->routeIs('accounting.clients*') ? 'active' : '' }}" 
-                           href="{{ route('accounting.clients') }}">
-                        Clients
-                    </a></li>
-                    @endcan
-                    
-                    @can('accounting_reports')
-                    <li><a class="dropdown-item" href="#" onclick="alert('Reports feature coming soon')">
-                        Reports
-                    </a></li>
-                    @endcan
-                    
-                    @can('accounting_settings')
-                    <li><a class="dropdown-item {{ request()->routeIs('accounting.settings*') ? 'active' : '' }}" 
-                           href="{{ route('accounting.settings') }}">
-                        Settings
-                    </a></li>
-                    @endcan
-                </ul>
-            @endcan
+      
+@can('accounting_access')
+<li class="nav-item">
+    <a href="{{ url('/admin/accounting') }}" class="nav-link {{ request()->is('admin/accounting*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-calculator"></i>
+        <p>
+            Accounting
+            <i class="fas fa-angle-left right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{{ url('/admin/accounting') }}" class="nav-link {{ request()->is('admin/accounting') && !request()->is('admin/accounting/*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Dashboard</p>
+            </a>
         </li>
+        <li class="nav-item">
+            <a href="{{ url('/admin/accounting/invoices') }}" class="nav-link {{ request()->is('admin/accounting/invoices*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Invoices</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url('/admin/accounting/clients') }}" class="nav-link {{ request()->is('admin/accounting/clients*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Clients</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url('/admin/accounting/settings') }}" class="nav-link {{ request()->is('admin/accounting/settings*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Settings</p>
+            </a>
+        </li>
+    </ul>
+</li>
+@endcan
 
         <li>
             @can('control_users')
