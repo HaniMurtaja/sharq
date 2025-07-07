@@ -287,109 +287,236 @@
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
+<!-- Generate Invoice Modal -->
+<div class="modal fade" id="generateInvoiceModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate New Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="generateInvoiceForm">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="month">Month</label>
+                        <input type="month" name="month" class="form-control" value="{{ now()->format('Y-m') }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="client_id">Client (Optional)</label>
+                        <select name="client_id" class="form-control">
+                            <option value="">All Clients</option>
+                            @foreach($clients as $client)
+                                <option value="{{ $client->id }}">{{ $client->first_name }} {{ $client->last_name }}</option>
+                            @endforeach
+                        </select>
+                        <small class="form-text text-muted">Leave empty to generate for all clients</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Generate Invoice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Mark as Paid Modal -->
+<div class="modal fade" id="markAsPaidModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Mark as Paid</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="markAsPaidForm">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" name="invoice_id" id="paymentInvoiceId">
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method</label>
+                        <select name="payment_method" class="form-control" required>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="cash">Cash</option>
+                            <option value="tap_gateway">Tap Gateway</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_date">Payment Date</label>
+                        <input type="date" name="payment_date" class="form-control" value="{{ now()->format('Y-m-d') }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount_paid">Amount Paid</label>
+                        <input type="number" name="amount_paid" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transaction_reference">Transaction Reference</label>
+                        <input type="text" name="transaction_reference" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea name="notes" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Mark as Paid</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
-function generateNewInvoice() {
-    $('#generateInvoiceModal').modal('show');
-}
+$(document).ready(function() {
+    console.log('Invoices page DOM ready...');
 
-function confirmInvoice(invoiceId) {
-    if (confirm('Are you sure you want to confirm and send this invoice?')) {
-        fetch(`{{ url('/admin/accounting/invoices') }}/${invoiceId}/confirm`, {
+    // Generate new invoice function
+    window.generateNewInvoice = function() {
+        console.log('Opening generate invoice modal...');
+        $('#generateInvoiceModal').modal('show');
+    };
+
+    // Confirm invoice function
+    window.confirmInvoice = function(invoiceId) {
+        if (confirm('Are you sure you want to confirm and send this invoice?')) {
+            fetch(`/admin/accounting/invoices/${invoiceId}/confirm`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Invoice confirmed and sent successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while confirming the invoice.');
+            });
+        }
+    };
+
+    // Mark as paid function
+    window.markAsPaid = function(invoiceId) {
+        document.getElementById('paymentInvoiceId').value = invoiceId;
+        $('#markAsPaidModal').modal('show');
+    };
+
+    // Export invoices function
+    window.exportInvoices = function() {
+        window.location.href = '{{ route("accounting.invoices.export") }}';
+    };
+
+    // Handle generate invoice form submission
+    $('#generateInvoiceForm').on('submit', function(e) {
+        e.preventDefault();
+        console.log('Submitting generate invoice form...');
+        
+        const formData = new FormData(this);
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.html();
+        
+        // Show loading state
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Generating...').prop('disabled', true);
+        
+        $.ajax({
+            url: '{{ route("accounting.invoices.generate") }}',
             method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
             headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                console.log('Generate invoice response:', response);
+                if (response.success) {
+                    alert('Invoice generated successfully!');
+                    $('#generateInvoiceModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Generate invoice error:', error);
+                console.error('Response:', xhr.responseText);
+                
+                let errorMessage = 'An error occurred while generating the invoice.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                alert('Error: ' + errorMessage);
+            },
+            complete: function() {
+                // Restore button state
+                submitBtn.html(originalText).prop('disabled', false);
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Invoice confirmed and sent successfully!');
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while confirming the invoice.');
         });
-    }
-}
-
-function markAsPaid(invoiceId) {
-    document.getElementById('paymentInvoiceId').value = invoiceId;
-    $('#markAsPaidModal').modal('show');
-}
-
-function exportInvoices() {
-    window.location.href = '{{ url("/admin/accounting/invoices/export") }}';
-}
-
-// Generate Invoice Form
-document.getElementById('generateInvoiceForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-    
-    fetch('{{ url("/admin/accounting/invoices/generate") }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Invoice generated successfully!');
-            $('#generateInvoiceModal').modal('hide');
-            location.reload();
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while generating the invoice.');
     });
-});
 
-// Mark as Paid Form
-document.getElementById('markAsPaidForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const invoiceId = formData.get('invoice_id');
-    const data = Object.fromEntries(formData.entries());
-    
-    fetch(`{{ url('/admin/accounting/invoices') }}/${invoiceId}/mark-paid`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Payment recorded successfully!');
-            $('#markAsPaidModal').modal('hide');
-            location.reload();
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while recording the payment.');
+    // Handle mark as paid form submission
+    $('#markAsPaidForm').on('submit', function(e) {
+        e.preventDefault();
+        console.log('Submitting mark as paid form...');
+        
+        const formData = new FormData(this);
+        const invoiceId = formData.get('invoice_id');
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.html();
+        
+        // Show loading state
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop('disabled', true);
+        
+        $.ajax({
+            url: `/admin/accounting/invoices/${invoiceId}/mark-paid`,
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                console.log('Mark as paid response:', response);
+                if (response.success) {
+                    alert('Payment recorded successfully!');
+                    $('#markAsPaidModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Mark as paid error:', error);
+                console.error('Response:', xhr.responseText);
+                
+                let errorMessage = 'An error occurred while recording the payment.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                alert('Error: ' + errorMessage);
+            },
+            complete: function() {
+                // Restore button state
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
     });
 });
 </script>
-@endpush
+@endsection

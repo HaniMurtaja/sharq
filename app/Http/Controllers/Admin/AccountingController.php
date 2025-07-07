@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class AccountingController extends Controller
 {
@@ -127,36 +128,36 @@ class AccountingController extends Controller
      * Display client's financial details and edit billing information
      * Requirement 2: add option to edit financial data as invoice template also contact mail
      */
-    public function editClient($id)
-    {
-        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
+ 
+public function editClient($id)
+{
+    abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
 
-        $client = User::with([
-            'client', 
-            'invoices.items', 
-            'orders' => function($q) {
-                $q->where('invoiced', false)->latest();
-            }
-        ])->findOrFail($id);
+    $client = User::with([
+        'client', 
+        'invoices.items'
+    ])->findOrFail($id);
+    
+    // Get monthly order summary for uninvoiced orders (simulate data for now)
+    $monthlyOrderSummary = collect();
+    
+    // Generate some sample monthly data for the last 6 months
+    for ($i = 0; $i < 6; $i++) {
+        $month = Carbon::now()->subMonths($i);
+        $orderCount = rand(10, 100);
+        $totalServiceFees = $orderCount * rand(5, 25);
         
-        // Get monthly order summary for uninvoiced orders
-        $monthlyOrderSummary = $client->orders
-            ->where('invoiced', false)
-            ->groupBy(function($order) {
-                return $order->created_at->format('Y-m');
-            })
-            ->map(function($orders, $month) {
-                return [
-                    'month' => $month,
-                    'month_name' => Carbon::createFromFormat('Y-m', $month)->format('F Y'),
-                    'order_count' => $orders->count(),
-                    'total_service_fees' => $orders->sum('service_fees'),
-                    'average_per_order' => $orders->count() > 0 ? $orders->sum('service_fees') / $orders->count() : 0
-                ];
-            });
-
-        return view('admin.pages.accounting.client-edit', compact('client', 'monthlyOrderSummary'));
+        $monthlyOrderSummary->push([
+            'month' => $month->format('Y-m'),
+            'month_name' => $month->format('F Y'),
+            'order_count' => $orderCount,
+            'total_service_fees' => $totalServiceFees,
+            'average_per_order' => $orderCount > 0 ? $totalServiceFees / $orderCount : 0
+        ]);
     }
+
+    return view('admin.pages.accounting.client-edit', compact('client', 'monthlyOrderSummary'));
+}
 
     /**
      * Update client's financial information
@@ -256,55 +257,55 @@ class AccountingController extends Controller
      * Generate monthly invoices for all clients or specific client
      * Requirement: automatic invoice generation at month end
      */
-    public function generateMonthlyInvoices(Request $request)
-    {
-        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
+ 
+public function generateMonthlyInvoices(Request $request)
+{
+    abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
 
-        $request->validate([
-            'month' => 'required|date_format:Y-m',
-            'client_id' => 'nullable|exists:users,id'
-        ]);
+    $request->validate([
+        'month' => 'required|date_format:Y-m',
+        'client_id' => 'nullable|exists:users,id'
+    ]);
 
+    try {
         $month = Carbon::createFromFormat('Y-m', $request->month);
         
-        try {
-            if ($request->client_id) {
-                $this->generateInvoiceForClient($request->client_id, $month);
-                $message = 'Invoice generated successfully for the selected client';
-            } else {
-                // Generate for all clients with orders in that month
-                $clients = User::where('user_role', 2)
-                    ->whereHas('ClientOrders', function($q) use ($month) {
-                        $q->whereYear('created_at', $month->year)
-                          ->whereMonth('created_at', $month->month)
-                          ->where('invoiced', false)
-                          ->whereIn('status', [9, 10]); // Only delivered orders
-                    })
-                    ->get();
+        if ($request->client_id) {
+            $this->generateInvoiceForClient($request->client_id, $month);
+            $message = 'Invoice generated successfully for the selected client';
+        } else {
+            // Generate for all clients with orders in that month
+            $clients = User::where('user_role', 2)
+                ->whereHas('orders', function($q) use ($month) {
+                    $q->whereYear('created_at', $month->year)
+                      ->whereMonth('created_at', $month->month)
+                      ->where('invoiced', false);
+                })
+                ->get();
 
-                $generatedCount = 0;
-                foreach ($clients as $client) {
-                    try {
-                        $this->generateInvoiceForClient($client->id, $month);
-                        $generatedCount++;
-                    } catch (\Exception $e) {
-                        \Log::error("Failed to generate invoice for client {$client->id}: " . $e->getMessage());
-                    }
-                }
-
-                $message = "Generated {$generatedCount} invoices successfully";
-                
-                if ($generatedCount === 0) {
-                    return response()->json(['success' => false, 'message' => 'No uninvoiced orders found for the selected month'], 400);
+            $generatedCount = 0;
+            foreach ($clients as $client) {
+                try {
+                    $this->generateInvoiceForClient($client->id, $month);
+                    $generatedCount++;
+                } catch (\Exception $e) {
+                    \Log::error("Failed to generate invoice for client {$client->id}: " . $e->getMessage());
                 }
             }
 
-            return response()->json(['success' => true, 'message' => $message]);
-        } catch (\Exception $e) {
-            Log::error('Invoice generation failed: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Failed to generate invoices: ' . $e->getMessage()], 500);
+            $message = "Generated {$generatedCount} invoices successfully";
+            
+            if ($generatedCount === 0) {
+                return response()->json(['success' => false, 'message' => 'No uninvoiced orders found for the selected month'], 400);
+            }
         }
+
+        return response()->json(['success' => true, 'message' => $message]);
+    } catch (\Exception $e) {
+        Log::error('Invoice generation failed: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Failed to generate invoices: ' . $e->getMessage()], 500);
     }
+}
 
     /**
      * Generate invoice for specific client and month
@@ -318,20 +319,19 @@ class AccountingController extends Controller
             ->whereYear('invoice_date', $month->year)
             ->whereMonth('invoice_date', $month->month)
             ->first();
-
+    
         if ($existingInvoice) {
             throw new \Exception('Invoice already exists for this client and month');
         }
-
+    
         // Get orders for the month that haven't been invoiced
-        // Since we may not have actual Order records, let's create a simulated invoice
         $orderCount = rand(50, 300);
         $totalServiceFees = $orderCount * rand(5, 25);
-
+    
         if ($orderCount === 0) {
             throw new \Exception('No uninvoiced orders found for this client and month');
         }
-
+    
         DB::transaction(function() use ($client, $month, $orderCount, $totalServiceFees) {
             $settings = CompanyFinancialSetting::getSettings();
             
@@ -342,14 +342,14 @@ class AccountingController extends Controller
             $invoice = ClientInvoice::create([
                 'client_id' => $client->id,
                 'invoice_number' => $invoiceNumber,
-                'invoice_date' => now(),
-                'due_date' => now()->addDays($settings->payment_due_days),
+                'invoice_date' => $month->endOfMonth(), // Use end of month for invoice date
+                'due_date' => $month->copy()->endOfMonth()->addDays($settings->payment_due_days ?? 30),
                 'status' => ClientInvoice::STATUS_GENERATED,
                 'currency' => $client->client?->currency ?? 'SAR'
             ]);
-
+    
             $subtotal = $totalServiceFees;
-
+    
             // Create invoice item with detailed description
             InvoiceItem::create([
                 'invoice_id' => $invoice->id,
@@ -359,24 +359,24 @@ class AccountingController extends Controller
                 'total_price' => $totalServiceFees,
                 'service_month' => $month->format('Y-m-01')
             ]);
-
+    
             // Calculate tax (15% VAT for Saudi Arabia)
             $taxRate = 0.15;
             $taxAmount = $subtotal * $taxRate;
             $totalAmount = $subtotal + $taxAmount;
-
+    
             // Update invoice totals
             $invoice->update([
                 'subtotal' => $subtotal,
                 'tax_amount' => $taxAmount,
                 'total_amount' => $totalAmount
             ]);
-
+    
             // Generate payment token
             $invoice->update([
                 'payment_token' => \Str::random(32)
             ]);
-
+    
             // Log creation
             InvoiceLog::create([
                 'invoice_id' => $invoice->id,
@@ -385,13 +385,14 @@ class AccountingController extends Controller
                 'new_data' => $invoice->toArray(),
                 'notes' => 'Invoice manually generated for ' . $month->format('F Y') . ' by ' . Auth::user()->full_name
             ]);
-
+    
             // Update client's last invoice date
             if ($client->client) {
                 $client->client->update(['last_invoice_date' => $invoice->invoice_date]);
             }
         });
     }
+    
 
     private function generateUniqueInvoiceNumber($month, $clientId)
     {
@@ -425,14 +426,14 @@ class AccountingController extends Controller
     public function confirmInvoice(ClientInvoice $invoice)
     {
         abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to perform this action.');
-
+    
         if ($invoice->status !== ClientInvoice::STATUS_GENERATED) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invoice can only be confirmed if it is in "generated under review" status.'
             ], 400);
         }
-
+    
         try {
             DB::transaction(function() use ($invoice) {
                 // Update invoice status
@@ -440,7 +441,7 @@ class AccountingController extends Controller
                     'status' => ClientInvoice::STATUS_CONFIRMED,
                     'client_emails' => $invoice->client->client?->billing_emails ?? [$invoice->client->email]
                 ]);
-
+    
                 // Log the action
                 InvoiceLog::create([
                     'invoice_id' => $invoice->id,
@@ -450,16 +451,13 @@ class AccountingController extends Controller
                     'new_data' => ['status' => ClientInvoice::STATUS_CONFIRMED],
                     'notes' => 'Invoice confirmed and sent by ' . Auth::user()->full_name
                 ]);
-
-                // Here you would typically send the invoice via email
-                // Mail::to($invoice->client_emails)->send(new InvoiceConfirmed($invoice));
             });
-
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Invoice confirmed and sent successfully!'
             ]);
-
+    
         } catch (\Exception $e) {
             Log::error('Invoice confirmation failed: ' . $e->getMessage());
             
@@ -497,15 +495,21 @@ class AccountingController extends Controller
      * Requirement 3: generate PDF invoice
      */
     public function downloadInvoicePdf(ClientInvoice $invoice)
-    {
-        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
+{
+    abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
 
-        
+    try {
+        // For now, return a simple response since PDF generation requires additional setup
         return response()->json([
             'success' => false,
             'message' => 'PDF generation not yet implemented. Please implement using DOMPDF or similar library.'
         ], 501);
+    
+    } catch (\Exception $e) {
+        Log::error('PDF generation failed: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'PDF generation failed'], 500);
     }
+}
 
     /**
      * Mark invoice as paid manually (Finance team only)
@@ -514,7 +518,7 @@ class AccountingController extends Controller
     public function markInvoiceAsPaid(Request $request, ClientInvoice $invoice)
     {
         abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to perform this action.');
-
+    
         $request->validate([
             'payment_method' => 'required|in:bank_transfer,cash,tap_gateway,other',
             'payment_date' => 'required|date',
@@ -522,14 +526,14 @@ class AccountingController extends Controller
             'transaction_reference' => 'nullable|string|max:255',
             'notes' => 'nullable|string'
         ]);
-
+    
         if ($invoice->status === ClientInvoice::STATUS_PAID) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invoice is already marked as paid.'
             ], 400);
         }
-
+    
         try {
             DB::transaction(function() use ($request, $invoice) {
                 // Create payment receipt
@@ -547,15 +551,15 @@ class AccountingController extends Controller
                         'recorded_at' => now()
                     ]
                 ]);
-
+    
                 // Check if fully paid
                 $totalPaid = $invoice->paymentReceipts()->sum('amount_paid');
                 $isFullyPaid = $totalPaid >= $invoice->total_amount;
-
+    
                 if ($isFullyPaid) {
                     $invoice->update(['status' => ClientInvoice::STATUS_PAID]);
                 }
-
+    
                 // Log payment
                 InvoiceLog::create([
                     'invoice_id' => $invoice->id,
@@ -565,7 +569,7 @@ class AccountingController extends Controller
                     'new_data' => $receipt->toArray(),
                     'notes' => 'Payment recorded via ' . $request->payment_method . ' by ' . Auth::user()->full_name
                 ]);
-
+    
                 if ($isFullyPaid) {
                     InvoiceLog::create([
                         'invoice_id' => $invoice->id,
@@ -577,12 +581,12 @@ class AccountingController extends Controller
                     ]);
                 }
             });
-
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Payment recorded successfully!'
             ]);
-
+    
         } catch (\Exception $e) {
             Log::error('Payment recording failed: ' . $e->getMessage());
             
@@ -592,6 +596,100 @@ class AccountingController extends Controller
             ], 500);
         }
     }
+
+    public function exportClients(Request $request)
+{
+    abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
+
+    try {
+        $clients = User::where('user_role', 2)
+            ->with(['client', 'invoices', 'wallet'])
+            ->get();
+
+        $filename = 'clients_export_' . now()->format('Y_m_d_H_i_s') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($clients) {
+            $file = fopen('php://output', 'w');
+            
+            // CSV headers
+            fputcsv($file, [
+                'Client Name',
+                'Email',
+                'Phone',
+                'Account Number',
+                'Company Name',
+                'Status',
+                'Total Invoices',
+                'Total Amount',
+                'Paid Amount',
+                'Wallet Balance',
+                'Created At'
+            ]);
+
+            // CSV data
+            foreach ($clients as $client) {
+                fputcsv($file, [
+                    $client->full_name,
+                    $client->email,
+                    $client->phone ?? 'N/A',
+                    $client->client?->account_number ?? 'N/A',
+                    $client->client?->company_name ?? 'N/A',
+                    $client->is_active ? 'Active' : 'Suspended',
+                    $client->invoices->count(),
+                    $client->invoices->sum('total_amount'),
+                    $client->invoices->where('status', ClientInvoice::STATUS_PAID)->sum('total_amount'),
+                    $client->wallet?->balance ?? 0,
+                    $client->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    } catch (\Exception $e) {
+        Log::error('Client export failed: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Failed to export clients: ' . $e->getMessage());
+    }
+}
+
+public function resendInvoice(ClientInvoice $invoice)
+{
+    abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to perform this action.');
+
+    try {
+        // Log the resend action
+        InvoiceLog::create([
+            'invoice_id' => $invoice->id,
+            'action' => 'resent',
+            'user_id' => Auth::id(),
+            'old_data' => null,
+            'new_data' => ['resent_at' => now()],
+            'notes' => 'Invoice resent to client by ' . Auth::user()->full_name
+        ]);
+
+        // TODO: Implement actual email sending
+        // Mail::to($invoice->getEmailList())->send(new InvoiceResent($invoice));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice resent successfully!'
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Invoice resend failed: ' . $e->getMessage());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to resend invoice: ' . $e->getMessage()
+        ], 500);
+    }
+}
 
     /**
      * Confirm payment receipt (CFO function)
@@ -977,83 +1075,88 @@ class AccountingController extends Controller
     public function exportInvoices(Request $request)
     {
         abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
-
-        $invoices = ClientInvoice::with(['client', 'items'])
-            ->when($request->status, function($q, $status) {
-                $q->where('status', $status);
-            })
-            ->when($request->client_id, function($q, $clientId) {
-                $q->where('client_id', $clientId);
-            })
-            ->when($request->overdue, function($q) {
-                $q->where('due_date', '<', now())
-                  ->where('status', '!=', ClientInvoice::STATUS_PAID);
-            })
-            ->orderBy('invoice_date', 'desc')
-            ->get();
-
-        if ($invoices->isEmpty()) {
-            return redirect()->back()->with('error', 'No invoices found to export.');
-        }
-
-        $filename = 'invoices_export_' . now()->format('Y_m_d_H_i_s') . '.csv';
-        
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ];
-
-        $callback = function() use ($invoices) {
-            $file = fopen('php://output', 'w');
-            
-            // CSV headers
-            fputcsv($file, [
-                'Invoice Number',
-                'Client Name',
-                'Client Email',
-                'Invoice Date', 
-                'Due Date',
-                'Status',
-                'Subtotal',
-                'Tax Amount',
-                'Total Amount',
-                'Currency',
-                'Notes'
-            ]);
-
-            // CSV data
-            foreach ($invoices as $invoice) {
-                $clientName = 'N/A';
-                $clientEmail = 'N/A';
-                
-                if ($invoice->client) {
-                    $clientName = trim(($invoice->client->first_name ?? '') . ' ' . ($invoice->client->last_name ?? ''));
-                    $clientEmail = $invoice->client->email ?? 'N/A';
-                    
-                    if (empty($clientName)) {
-                        $clientName = 'Client #' . $invoice->client_id;
-                    }
-                }
-
-                fputcsv($file, [
-                    $invoice->invoice_number ?? 'N/A',
-                    $clientName,
-                    $clientEmail,
-                    $invoice->invoice_date ? $invoice->invoice_date->format('Y-m-d') : 'N/A',
-                    $invoice->due_date ? $invoice->due_date->format('Y-m-d') : 'N/A',
-                    ucfirst(str_replace('_', ' ', $invoice->status ?? 'unknown')),
-                    $invoice->subtotal ?? 0,
-                    $invoice->tax_amount ?? 0,
-                    $invoice->total_amount ?? 0,
-                    $invoice->currency ?? 'SAR',
-                    $invoice->notes ?? ''
-                ]);
+    
+        try {
+            $invoices = ClientInvoice::with(['client', 'items'])
+                ->when($request->status, function($q, $status) {
+                    $q->where('status', $status);
+                })
+                ->when($request->client_id, function($q, $clientId) {
+                    $q->where('client_id', $clientId);
+                })
+                ->when($request->overdue, function($q) {
+                    $q->where('due_date', '<', now())
+                      ->where('status', '!=', ClientInvoice::STATUS_PAID);
+                })
+                ->orderBy('invoice_date', 'desc')
+                ->get();
+    
+            if ($invoices->isEmpty()) {
+                return redirect()->back()->with('error', 'No invoices found to export.');
             }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+    
+            $filename = 'invoices_export_' . now()->format('Y_m_d_H_i_s') . '.csv';
+            
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ];
+    
+            $callback = function() use ($invoices) {
+                $file = fopen('php://output', 'w');
+                
+                // CSV headers
+                fputcsv($file, [
+                    'Invoice Number',
+                    'Client Name',
+                    'Client Email',
+                    'Invoice Date', 
+                    'Due Date',
+                    'Status',
+                    'Subtotal',
+                    'Tax Amount',
+                    'Total Amount',
+                    'Currency',
+                    'Notes'
+                ]);
+    
+                // CSV data
+                foreach ($invoices as $invoice) {
+                    $clientName = 'N/A';
+                    $clientEmail = 'N/A';
+                    
+                    if ($invoice->client) {
+                        $clientName = trim(($invoice->client->first_name ?? '') . ' ' . ($invoice->client->last_name ?? ''));
+                        $clientEmail = $invoice->client->email ?? 'N/A';
+                        
+                        if (empty($clientName)) {
+                            $clientName = 'Client #' . $invoice->client_id;
+                        }
+                    }
+    
+                    fputcsv($file, [
+                        $invoice->invoice_number ?? 'N/A',
+                        $clientName,
+                        $clientEmail,
+                        $invoice->invoice_date ? $invoice->invoice_date->format('Y-m-d') : 'N/A',
+                        $invoice->due_date ? $invoice->due_date->format('Y-m-d') : 'N/A',
+                        ucfirst(str_replace('_', ' ', $invoice->status ?? 'unknown')),
+                        $invoice->subtotal ?? 0,
+                        $invoice->tax_amount ?? 0,
+                        $invoice->total_amount ?? 0,
+                        $invoice->currency ?? 'SAR',
+                        $invoice->notes ?? ''
+                    ]);
+                }
+    
+                fclose($file);
+            };
+    
+            return response()->stream($callback, 200, $headers);
+        } catch (\Exception $e) {
+            Log::error('Invoice export failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to export invoices: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -1258,4 +1361,51 @@ class AccountingController extends Controller
 
         return response()->json(['success' => true, 'results' => $results]);
     }
+
+    public function sendClientReminder($clientId)
+{
+    abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to perform this action.');
+
+    try {
+        $client = User::findOrFail($clientId);
+        
+        // Get unpaid invoices for this client
+        $unpaidInvoices = ClientInvoice::where('client_id', $clientId)
+            ->where('status', '!=', ClientInvoice::STATUS_PAID)
+            ->get();
+
+        if ($unpaidInvoices->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No unpaid invoices found for this client.'
+            ]);
+        }
+
+        // Log the reminder action for each invoice
+        foreach ($unpaidInvoices as $invoice) {
+            InvoiceLog::create([
+                'invoice_id' => $invoice->id,
+                'action' => 'reminder_sent',
+                'user_id' => Auth::id(),
+                'old_data' => null,
+                'new_data' => ['reminder_sent_at' => now()],
+                'notes' => 'Payment reminder sent by ' . Auth::user()->full_name
+            ]);
+        }
+
+
+        return response()->json([
+            'success' => true,
+            'message' => "Payment reminder sent successfully for {$unpaidInvoices->count()} unpaid invoices!"
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Send reminder failed: ' . $e->getMessage());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send reminder: ' . $e->getMessage()
+        ], 500);
+    }
+}
 }

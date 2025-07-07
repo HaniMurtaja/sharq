@@ -239,67 +239,139 @@
     </div>
 </div>
 
-@endsection
+<div class="modal fade" id="generateInvoiceModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Generate Invoice</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="generateInvoiceForm">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="month">Month</label>
+                        <input type="month" name="month" class="form-control" value="{{ now()->format('Y-m') }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="client_id">Client (Optional)</label>
+                        <select name="client_id" class="form-control">
+                            <option value="">All Clients</option>
+                            {{-- Client options will be loaded dynamically --}}
+                        </select>
+                        <small class="form-text text-muted">Leave empty to generate for all clients</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Generate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-@push('scripts')
+
 <script>
-function generateInvoice() {
-    $('#generateInvoiceModal').modal('show');
-}
+$(document).ready(function() {
+    console.log('Accounting dashboard DOM ready...');
 
-function sendOverdueNotifications() {
-    if (confirm('Send overdue notifications to all clients with overdue invoices?')) {
-        fetch('{{ url("/admin/accounting/notifications/overdue") }}', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Overdue notifications sent successfully!');
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while sending notifications.');
-        });
-    }
-}
+    // Generate invoice function
+    window.generateInvoice = function() {
+        console.log('Opening generate invoice modal...');
+        $('#generateInvoiceModal').modal('show');
+    };
 
-// Generate Invoice Form
-document.getElementById('generateInvoiceForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-    
-    fetch('{{ url("/admin/accounting/invoices/generate") }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Invoice generated successfully!');
-            $('#generateInvoiceModal').modal('hide');
-            location.reload();
-        } else {
-            alert('Error: ' + data.message);
+    // Send overdue notifications function
+    window.sendOverdueNotifications = function() {
+        if (confirm('Send overdue notifications to all clients with overdue invoices?')) {
+            fetch('{{ route("accounting.notifications.overdue") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Overdue notifications sent successfully!');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while sending notifications.');
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while generating the invoice.');
+    };
+
+    // Handle generate invoice form submission
+    $('#generateInvoiceForm').on('submit', function(e) {
+        e.preventDefault();
+        console.log('Submitting generate invoice form...');
+        
+        const formData = new FormData(this);
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.html();
+        
+        // Show loading state
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Generating...').prop('disabled', true);
+        
+        $.ajax({
+            url: '{{ route("accounting.invoices.generate") }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                console.log('Generate invoice response:', response);
+                if (response.success) {
+                    alert('Invoice generated successfully!');
+                    $('#generateInvoiceModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Generate invoice error:', error);
+                console.error('Response:', xhr.responseText);
+                
+                let errorMessage = 'An error occurred while generating the invoice.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                alert('Error: ' + errorMessage);
+            },
+            complete: function() {
+                // Restore button state
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+
+    // Load clients for the dropdown when modal is opened
+    $('#generateInvoiceModal').on('show.bs.modal', function() {
+        // Load clients dynamically
+        fetch('/admin/accounting/clients')
+            .then(response => response.text())
+            .then(html => {
+                // Extract client data from the response if needed
+                // For now, we'll just leave the dropdown as is
+                console.log('Modal opened, clients could be loaded here');
+            })
+            .catch(error => {
+                console.error('Error loading clients:', error);
+            });
     });
 });
 </script>
-@endpush
+
+@endsection

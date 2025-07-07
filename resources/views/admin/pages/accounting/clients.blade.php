@@ -171,25 +171,27 @@
     </div>
 </div>
 
-
-<div class="modal fade" id="generateInvoiceModal" tabindex="-1">
-    <div class="modal-dialog">
+<!-- Generate Invoice Modal -->
+<div class="modal fade" id="generateInvoiceModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Generate Invoice for Client</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <form id="generateInvoiceForm" method="POST">
+            <form id="generateInvoiceForm">
                 @csrf
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="invoice_month" class="form-label">Invoice Month</label>
+                    <div class="form-group">
+                        <label for="invoice_month">Invoice Month</label>
                         <input type="month" class="form-control" id="invoice_month" name="month" value="{{ date('Y-m') }}" required>
                     </div>
                     <input type="hidden" id="selected_client_id" name="client_id">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Generate Invoice</button>
                 </div>
             </form>
@@ -197,12 +199,15 @@
     </div>
 </div>
 
-<div class="modal fade" id="invoiceHistoryModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+<!-- Invoice History Modal -->
+<div class="modal fade" id="invoiceHistoryModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Invoice History</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div id="invoiceHistoryContent">
@@ -217,132 +222,201 @@
 </div>
 
 <script>
-function generateClientInvoice(clientId) {
-    document.getElementById('selected_client_id').value = clientId;
-    document.getElementById('generateInvoiceForm').action = '{{ route("accounting.invoices.generate") }}';
-    $('#generateInvoiceModal').modal('show');
-}
-
-function viewInvoiceHistory(clientId) {
-    $('#invoiceHistoryModal').modal('show');
+// Make sure jQuery is loaded and DOM is ready
+$(document).ready(function() {
+    console.log('DOM ready, initializing accounting client functions...');
     
-    fetch(`/admin/accounting/clients/${clientId}/invoice-history`)
-        .then(response => response.json())
-        .then(data => {
-            let html = '<div class="row">';
-            
-         
-            html += '<div class="col-md-12 mb-4">';
-            html += '<div class="row">';
-            html += `<div class="col-md-3"><div class="bg-primary text-white p-3 rounded text-center"><h4>${data.total_summary.total_invoices}</h4><small>Total Invoices</small></div></div>`;
-            html += `<div class="col-md-3"><div class="bg-success text-white p-3 rounded text-center"><h4>${(data.total_summary.total_paid/1000).toFixed(1)}K</h4><small>Total Paid (SAR)</small></div></div>`;
-            html += `<div class="col-md-3"><div class="bg-warning text-white p-3 rounded text-center"><h4>${(data.total_summary.total_pending/1000).toFixed(1)}K</h4><small>Pending (SAR)</small></div></div>`;
-            html += `<div class="col-md-3"><div class="bg-info text-white p-3 rounded text-center"><h4>${((data.total_summary.total_paid/data.total_summary.total_amount)*100).toFixed(1)}%</h4><small>Payment Rate</small></div></div>`;
-            html += '</div></div>';
-            
-           
-            html += '<div class="col-md-12">';
-            html += '<h6>Monthly Breakdown</h6>';
-            html += '<div class="table-responsive">';
-            html += '<table class="table table-sm">';
-            html += '<thead><tr><th>Month</th><th>Invoices</th><th>Orders</th><th>Amount</th><th>Status</th></tr></thead><tbody>';
-            
-            data.monthly_breakdown.forEach(month => {
-                const paymentRate = (month.paid_amount / month.total_amount * 100).toFixed(1);
-                html += `<tr>
-                    <td>${month.month}</td>
-                    <td>${month.invoice_count}</td>
-                    <td>${month.order_count}</td>
-                    <td>${month.total_amount.toLocaleString()} SAR</td>
-                    <td><span class="badge ${month.pending_amount > 0 ? 'bg-warning' : 'bg-success'}">${paymentRate}% Paid</span></td>
-                </tr>`;
+    // Generate client invoice function
+    window.generateClientInvoice = function(clientId) {
+        console.log('Generate invoice for client:', clientId);
+        document.getElementById('selected_client_id').value = clientId;
+        $('#generateInvoiceModal').modal('show');
+    };
+
+    // View invoice history function
+    window.viewInvoiceHistory = function(clientId) {
+        console.log('View invoice history for client:', clientId);
+        $('#invoiceHistoryModal').modal('show');
+        
+        // Load invoice history via AJAX
+        fetch(`/admin/accounting/clients/${clientId}/invoice-history`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Invoice history data:', data);
+                
+                let html = '<div class="row">';
+                
+                // Summary cards
+                html += '<div class="col-md-12 mb-4">';
+                html += '<div class="row">';
+                html += `<div class="col-md-3"><div class="bg-primary text-white p-3 rounded text-center"><h4>${data.total_summary.total_invoices || 0}</h4><small>Total Invoices</small></div></div>`;
+                html += `<div class="col-md-3"><div class="bg-success text-white p-3 rounded text-center"><h4>${((data.total_summary.total_paid || 0)/1000).toFixed(1)}K</h4><small>Total Paid (SAR)</small></div></div>`;
+                html += `<div class="col-md-3"><div class="bg-warning text-white p-3 rounded text-center"><h4>${((data.total_summary.total_pending || 0)/1000).toFixed(1)}K</h4><small>Pending (SAR)</small></div></div>`;
+                
+                const paymentRate = data.total_summary.total_amount > 0 ? 
+                    ((data.total_summary.total_paid/data.total_summary.total_amount)*100).toFixed(1) : '0';
+                html += `<div class="col-md-3"><div class="bg-info text-white p-3 rounded text-center"><h4>${paymentRate}%</h4><small>Payment Rate</small></div></div>`;
+                html += '</div></div>';
+                
+                // Monthly breakdown
+                if (data.monthly_breakdown && data.monthly_breakdown.length > 0) {
+                    html += '<div class="col-md-12">';
+                    html += '<h6>Monthly Breakdown</h6>';
+                    html += '<div class="table-responsive">';
+                    html += '<table class="table table-sm">';
+                    html += '<thead><tr><th>Month</th><th>Invoices</th><th>Orders</th><th>Amount</th><th>Status</th></tr></thead><tbody>';
+                    
+                    data.monthly_breakdown.forEach(month => {
+                        const paymentRate = month.total_amount > 0 ? (month.paid_amount / month.total_amount * 100).toFixed(1) : '0';
+                        html += `<tr>
+                            <td>${month.month}</td>
+                            <td>${month.invoice_count}</td>
+                            <td>${month.order_count}</td>
+                            <td>${month.total_amount.toLocaleString()} SAR</td>
+                            <td><span class="badge ${month.pending_amount > 0 ? 'badge-warning' : 'badge-success'}">${paymentRate}% Paid</span></td>
+                        </tr>`;
+                    });
+                    
+                    html += '</tbody></table></div></div>';
+                } else {
+                    html += '<div class="col-md-12"><p class="text-muted">No invoice history found.</p></div>';
+                }
+                
+                html += '</div>';
+                
+                document.getElementById('invoiceHistoryContent').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error loading invoice history:', error);
+                document.getElementById('invoiceHistoryContent').innerHTML = 
+                    '<div class="alert alert-danger">Failed to load invoice history. Please try again.</div>';
             });
-            
-            html += '</tbody></table></div></div></div>';
-            
-            document.getElementById('invoiceHistoryContent').innerHTML = html;
-        })
-        .catch(error => {
-            document.getElementById('invoiceHistoryContent').innerHTML = '<div class="alert alert-danger">Failed to load invoice history</div>';
-        });
-}
+    };
 
-function suspendClient(clientId) {
-    if (confirm('Are you sure you want to suspend this client account? This will prevent them from placing new orders.')) {
-        fetch(`/admin/accounting/clients/${clientId}/suspend`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            }
-        }).then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        });
-    }
-}
-
-function reactivateClient(clientId) {
-    if (confirm('Are you sure you want to reactivate this client account?')) {
-        fetch(`/admin/accounting/clients/${clientId}/reactivate`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            }
-        }).then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        });
-    }
-}
-
-function sendInvoiceReminder(clientId) {
-    if (confirm('Send payment reminder to this client for all unpaid invoices?')) {
-        fetch(`/admin/accounting/clients/${clientId}/send-reminder`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            }
-        }).then(response => response.json())
-        .then(data => {
-            alert(data.message);
-        });
-    }
-}
-
-
-document.getElementById('generateInvoiceForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    
-    fetch(this.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+    // Suspend client function
+    window.suspendClient = function(clientId) {
+        if (confirm('Are you sure you want to suspend this client account? This will prevent them from placing new orders.')) {
+            fetch(`/admin/accounting/clients/${clientId}/suspend`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
         }
-    }).then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            $('#generateInvoiceModal').modal('hide');
-            location.reload();
-        } else {
-            alert('Error: ' + data.message);
+    };
+
+    // Reactivate client function
+    window.reactivateClient = function(clientId) {
+        if (confirm('Are you sure you want to reactivate this client account?')) {
+            fetch(`/admin/accounting/clients/${clientId}/reactivate`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
         }
+    };
+
+    // Send invoice reminder function
+    window.sendInvoiceReminder = function(clientId) {
+        if (confirm('Send payment reminder to this client for all unpaid invoices?')) {
+            fetch(`/admin/accounting/clients/${clientId}/send-reminder`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+    };
+
+    // Handle generate invoice form submission
+    $('#generateInvoiceForm').on('submit', function(e) {
+        e.preventDefault();
+        console.log('Submitting generate invoice form...');
+        
+        const formData = new FormData(this);
+        
+        // Show loading state
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Generating...').prop('disabled', true);
+        
+        $.ajax({
+            url: '{{ route("accounting.invoices.generate") }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                console.log('Generate invoice response:', response);
+                if (response.success) {
+                    alert(response.message);
+                    $('#generateInvoiceModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Generate invoice error:', error);
+                console.error('Response:', xhr.responseText);
+                
+                let errorMessage = 'An error occurred while generating the invoice.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                alert('Error: ' + errorMessage);
+            },
+            complete: function() {
+                // Restore button state
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
     });
 });
 </script>

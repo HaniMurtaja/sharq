@@ -278,5 +278,39 @@ function generateInvoiceForMonth(month) {
     document.getElementById('month').value = month;
     $('#generateInvoiceModal').modal('show');
 }
+
+// Handle form submission with proper error handling
+$(document).ready(function() {
+    $('#generateInvoiceModal form').on('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        $.ajax({
+            url: '{{ route("accounting.invoices.generate") }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    $('#generateInvoiceModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                console.error('Response:', xhr.responseText);
+                alert('An error occurred while generating the invoice. Please check the console for details.');
+            }
+        });
+    });
+});
 </script>
 @endsection

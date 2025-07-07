@@ -123,21 +123,6 @@ class User extends Authenticatable implements HasMedia
         return $this->hasOne(OperatorDetail::class, 'operator_id');
     }
 
-    public function OperatorOrders()
-    {
-        $today = Carbon::today();
-        $yesterday = Carbon::yesterday();
-
-        return $this->hasMany(Order::class, 'driver_id')
-            ->whereNotNull('driver_accepted_time')->whereDate('created_at', ">=", $yesterday)
-            ->WhereDate('created_at', "<=", $today);
-    }
-
-    public function ClientOrders()
-    {
-        return $this->hasMany(Order::class, 'ingr_shop_id');
-    }
-
     public function invoices()
     {
         return $this->hasMany(ClientInvoice::class, 'client_id');
@@ -158,4 +143,50 @@ class User extends Authenticatable implements HasMedia
         // Default to user_id for other roles
         return $this->hasOne(Wallet::class, 'user_id');
     }
+
+/**
+ * Get all orders for this client (if user is a client)
+ */
+public function orders()
+{
+    return $this->hasMany(Order::class, 'ingr_shop_id');
+}
+
+/**
+ * Get client orders (alias for orders relationship)
+ */
+public function ClientOrders()
+{
+    return $this->hasMany(Order::class, 'ingr_shop_id');
+}
+
+/**
+ * Get operator orders (if user is an operator/driver)
+ */
+public function OperatorOrders()
+{
+    $today = Carbon::today();
+    $yesterday = Carbon::yesterday();
+
+    return $this->hasMany(Order::class, 'driver_id')
+        ->whereNotNull('driver_accepted_time')
+        ->whereDate('created_at', ">=", $yesterday)
+        ->whereDate('created_at', "<=", $today);
+}
+
+/**
+ * Get delivered orders for this client
+ */
+public function deliveredOrders()
+{
+    return $this->orders()->where('status', 9); // Assuming 9 is delivered status
+}
+
+/**
+ * Get uninvoiced orders for this client
+ */
+public function uninvoicedOrders()
+{
+    return $this->orders()->where('invoiced', false);
+}
 }
