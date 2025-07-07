@@ -59,15 +59,20 @@ Route::prefix('admin')->group(function () {
             Route::get('/invoices', [App\Http\Controllers\Admin\AccountingController::class, 'invoices'])->name('invoices');
             Route::get('/invoices/data', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoicesData'])->name('invoices.data');
             Route::get('/invoices/{id}', [App\Http\Controllers\Admin\AccountingController::class, 'showInvoice'])->name('invoices.show');
-            Route::post('/invoices/generate', [App\Http\Controllers\Admin\AccountingController::class, 'generateMonthlyInvoices'])->name('invoices.generate');
-            Route::post('/invoices/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmInvoice'])->name('invoices.confirm');
-            Route::get('/invoices/{id}/pdf', [App\Http\Controllers\Admin\AccountingController::class, 'generateInvoicePDF'])->name('invoices.pdf');
-            Route::post('/invoices/{id}/mark-paid', [App\Http\Controllers\Admin\AccountingController::class, 'markAsPaid'])->name('invoices.mark-paid');
+         //   Route::post('/invoices/generate', [App\Http\Controllers\Admin\AccountingController::class, 'generateMonthlyInvoices'])->name('invoices.generate');
+         //   Route::post('/invoices/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmInvoice'])->name('invoices.confirm');
+         //   Route::get('/invoices/{id}/pdf', [App\Http\Controllers\Admin\AccountingController::class, 'generateInvoicePDF'])->name('invoices.pdf');
+        //    Route::post('/invoices/{id}/mark-paid', [App\Http\Controllers\Admin\AccountingController::class, 'markAsPaid'])->name('invoices.mark-paid');
             Route::post('/invoices/{id}/resend', [App\Http\Controllers\Admin\AccountingController::class, 'resendInvoice'])->name('invoices.resend');
             Route::get('/invoices/{id}/logs', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoiceLogs'])->name('invoices.logs');
-            Route::get('/invoices/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportInvoices'])->name('invoices.export');
+         //   Route::get('/invoices/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportInvoices'])->name('invoices.export');
             Route::post('/invoices/bulk-actions', [App\Http\Controllers\Admin\AccountingController::class, 'bulkInvoiceActions'])->name('invoices.bulk-actions');
-            
+            Route::post('/invoices/generate', [AccountingController::class, 'generateMonthlyInvoices'])->name('accounting.invoices.generate');
+            Route::get('/invoices/export', [AccountingController::class, 'exportInvoices'])->name('accounting.invoices.export');
+            Route::get('/invoices/{invoice}', [AccountingController::class, 'showInvoice'])->name('accounting.invoices.show');
+            Route::get('/invoices/{invoice}/pdf', [AccountingController::class, 'downloadInvoicePdf'])->name('accounting.invoices.pdf');
+            Route::post('/invoices/{invoice}/confirm', [AccountingController::class, 'confirmInvoice'])->name('accounting.invoices.confirm');
+            Route::post('/invoices/{invoice}/mark-paid', [AccountingController::class, 'markInvoiceAsPaid'])->name('accounting.invoices.mark-paid');
             // Payment Receipts
             Route::get('/invoices/{id}/receipts', [App\Http\Controllers\Admin\AccountingController::class, 'getPaymentReceipts'])->name('receipts.get');
             Route::post('/receipts/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmPaymentReceipt'])->name('receipts.confirm');

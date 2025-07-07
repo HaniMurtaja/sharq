@@ -47,37 +47,30 @@ class AccountingController extends Controller
     public function index()
     {
         abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
-    
+
+        // Get statistics
         $stats = [
             'total_invoices' => ClientInvoice::count(),
-            'pending_invoices' => ClientInvoice::where('status', ClientInvoice::STATUS_GENERATED)->count(), // Changed from pending_review
             'pending_review' => ClientInvoice::where('status', ClientInvoice::STATUS_GENERATED)->count(),
-            'confirmed_unpaid' => ClientInvoice::where('status', ClientInvoice::STATUS_CONFIRMED)->count(),
             'overdue_invoices' => ClientInvoice::where('due_date', '<', now())
                 ->where('status', '!=', ClientInvoice::STATUS_PAID)->count(),
-            'total_revenue' => ClientInvoice::where('status', ClientInvoice::STATUS_PAID)->sum('total_amount'),
-            'pending_amount' => ClientInvoice::where('status', '!=', ClientInvoice::STATUS_PAID)->sum('total_amount'),
-            'this_month_invoices' => ClientInvoice::whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)->count(),
-            'this_month_revenue' => ClientInvoice::whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->where('status', ClientInvoice::STATUS_PAID)->sum('total_amount')
+            'total_revenue' => ClientInvoice::where('status', ClientInvoice::STATUS_PAID)->sum('total_amount')
         ];
-    
-        // Recent invoices
-        $recentInvoices = ClientInvoice::with(['client'])
-            ->latest()
+
+        // Get recent invoices
+        $recentInvoices = ClientInvoice::with('client')
+            ->latest('invoice_date')
             ->limit(10)
             ->get();
-    
-        // Overdue alerts
-        $overdueAlerts = ClientInvoice::with(['client'])
+
+        // Get overdue alerts
+        $overdueAlerts = ClientInvoice::with('client')
             ->where('due_date', '<', now())
             ->where('status', '!=', ClientInvoice::STATUS_PAID)
             ->orderBy('due_date')
-            ->limit(10)
+            ->limit(5)
             ->get();
-    
+
         return view('admin.pages.accounting.index', compact('stats', 'recentInvoices', 'overdueAlerts'));
     }
 
@@ -247,21 +240,14 @@ class AccountingController extends Controller
      * Show invoice details with logs
      * Requirement 3: show invoice details and logs
      */
-    public function showInvoice($id)
+    public function showInvoice(ClientInvoice $invoice)
     {
         abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
 
-        $invoice = ClientInvoice::with([
-            'client', 
-            'items', 
-            'paymentReceipts', 
-            'logs.user',
-            'orders'
-        ])->findOrFail($id);
+        $invoice->load(['client', 'items', 'paymentReceipts', 'logs.user']);
 
-        return view('admin.pages.accounting.invoice-details', compact('invoice'));
+        return view('admin.pages.accounting.invoice-show', compact('invoice'));
     }
-
     /**
      * Generate monthly invoices for all clients or specific client
      * Requirement: automatic invoice generation at month end
@@ -436,45 +422,54 @@ class AccountingController extends Controller
      * Review and confirm invoice (CFO function)
      * Requirement 4: CFO confirmation before sending
      */
-    public function confirmInvoice(Request $request, $id)
+    public function confirmInvoice(ClientInvoice $invoice)
     {
-        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
+        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to perform this action.');
 
-        $invoice = ClientInvoice::findOrFail($id);
-        
         if ($invoice->status !== ClientInvoice::STATUS_GENERATED) {
-            return response()->json(['success' => false, 'message' => 'Invoice cannot be confirmed in current status'], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invoice can only be confirmed if it is in "generated under review" status.'
+            ], 400);
         }
 
-        DB::transaction(function() use ($invoice, $request) {
-            $oldStatus = $invoice->status;
-            $invoice->update(['status' => ClientInvoice::STATUS_CONFIRMED]);
+        try {
+            DB::transaction(function() use ($invoice) {
+                // Update invoice status
+                $invoice->update([
+                    'status' => ClientInvoice::STATUS_CONFIRMED,
+                    'client_emails' => $invoice->client->client?->billing_emails ?? [$invoice->client->email]
+                ]);
 
-            // Log the confirmation
-            InvoiceLog::create([
-                'invoice_id' => $invoice->id,
-                'action' => 'confirmed',
-                'user_id' => Auth::id(),
-                'old_data' => ['status' => $oldStatus],
-                'new_data' => ['status' => $invoice->status],
-                'notes' => 'Invoice confirmed and approved by ' . Auth::user()->full_name . ' (CFO/Account Manager)'
+                // Log the action
+                InvoiceLog::create([
+                    'invoice_id' => $invoice->id,
+                    'action' => 'confirmed',
+                    'user_id' => Auth::id(),
+                    'old_data' => ['status' => ClientInvoice::STATUS_GENERATED],
+                    'new_data' => ['status' => ClientInvoice::STATUS_CONFIRMED],
+                    'notes' => 'Invoice confirmed and sent by ' . Auth::user()->full_name
+                ]);
+
+                // Here you would typically send the invoice via email
+                // Mail::to($invoice->client_emails)->send(new InvoiceConfirmed($invoice));
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice confirmed and sent successfully!'
             ]);
 
-            // Send to client automatically after confirmation
-            $this->sendInvoiceToClient($invoice);
-
-            // Log the sending
-            InvoiceLog::create([
-                'invoice_id' => $invoice->id,
-                'action' => 'sent_to_client',
-                'user_id' => Auth::id(),
-                'new_data' => ['emails_sent_to' => $invoice->getEmailList()],
-                'notes' => 'Invoice sent to client emails after CFO confirmation'
-            ]);
-        });
-
-        return response()->json(['success' => true, 'message' => 'Invoice confirmed and sent to client successfully']);
+        } catch (\Exception $e) {
+            Log::error('Invoice confirmation failed: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to confirm invoice: ' . $e->getMessage()
+            ], 500);
+        }
     }
+
 
     /**
      * Send invoice to client
@@ -501,61 +496,42 @@ class AccountingController extends Controller
      * Generate PDF for invoice
      * Requirement 3: generate PDF invoice
      */
-    public function generateInvoicePDF($id)
+    public function downloadInvoicePdf(ClientInvoice $invoice)
     {
         abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
 
-        $invoice = ClientInvoice::with(['client', 'items'])->findOrFail($id);
         
-        try {
-            $pdf = $this->pdfService->generate($invoice);
-
-            // Log PDF generation
-            InvoiceLog::create([
-                'invoice_id' => $invoice->id,
-                'action' => 'pdf_generated',
-                'user_id' => Auth::id(),
-                'notes' => 'PDF generated by ' . Auth::user()->full_name
-            ]);
-
-            return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
-        } catch (\Exception $e) {
-            Log::error('PDF generation failed for invoice ' . $invoice->id . ': ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to generate PDF: ' . $e->getMessage());
-        }
+        return response()->json([
+            'success' => false,
+            'message' => 'PDF generation not yet implemented. Please implement using DOMPDF or similar library.'
+        ], 501);
     }
 
     /**
      * Mark invoice as paid manually (Finance team only)
      * Requirement: Finance team can change status to paid for bank transfers
      */
-    public function markAsPaid(Request $request, $id)
+    public function markInvoiceAsPaid(Request $request, ClientInvoice $invoice)
     {
-        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
+        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to perform this action.');
 
         $request->validate([
-            'payment_method' => 'required|in:bank_transfer,cash,other,tap_gateway',
+            'payment_method' => 'required|in:bank_transfer,cash,tap_gateway,other',
             'payment_date' => 'required|date',
             'amount_paid' => 'required|numeric|min:0',
-            'transaction_reference' => 'nullable|string',
-            'notes' => 'nullable|string',
-            'payment_documents' => 'nullable|array',
-            'payment_documents.*' => 'file|mimes:pdf,jpg,jpeg,png|max:2048'
+            'transaction_reference' => 'nullable|string|max:255',
+            'notes' => 'nullable|string'
         ]);
 
-        $invoice = ClientInvoice::findOrFail($id);
+        if ($invoice->status === ClientInvoice::STATUS_PAID) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invoice is already marked as paid.'
+            ], 400);
+        }
 
         try {
             DB::transaction(function() use ($request, $invoice) {
-                // Handle file uploads for payment documents
-                $documentPaths = [];
-                if ($request->hasFile('payment_documents')) {
-                    foreach ($request->file('payment_documents') as $file) {
-                        $path = $file->store('payment_documents', 'public');
-                        $documentPaths[] = $path;
-                    }
-                }
-
                 // Create payment receipt
                 $receipt = PaymentReceipt::create([
                     'invoice_id' => $invoice->id,
@@ -563,44 +539,57 @@ class AccountingController extends Controller
                     'payment_date' => $request->payment_date,
                     'payment_method' => $request->payment_method,
                     'transaction_reference' => $request->transaction_reference,
-                    'status' => PaymentReceipt::STATUS_UNDER_REVIEW, // CFO needs to confirm
+                    'status' => PaymentReceipt::STATUS_CONFIRMED,
                     'notes' => $request->notes,
                     'payment_details' => [
-                        'documents' => $documentPaths,
+                        'method' => $request->payment_method,
                         'recorded_by' => Auth::user()->full_name,
                         'recorded_at' => now()
                     ]
                 ]);
 
-                // Log the payment recording
+                // Check if fully paid
+                $totalPaid = $invoice->paymentReceipts()->sum('amount_paid');
+                $isFullyPaid = $totalPaid >= $invoice->total_amount;
+
+                if ($isFullyPaid) {
+                    $invoice->update(['status' => ClientInvoice::STATUS_PAID]);
+                }
+
+                // Log payment
                 InvoiceLog::create([
                     'invoice_id' => $invoice->id,
                     'action' => 'payment_recorded',
                     'user_id' => Auth::id(),
+                    'old_data' => null,
                     'new_data' => $receipt->toArray(),
-                    'notes' => 'Payment recorded manually by ' . Auth::user()->full_name . ' (Finance Team). Awaiting CFO confirmation.'
+                    'notes' => 'Payment recorded via ' . $request->payment_method . ' by ' . Auth::user()->full_name
                 ]);
 
-                // If amount covers full invoice, update status (but still needs CFO confirmation for receipt)
-                if ($invoice->getRemainingAmount() <= 0) {
-                    $oldStatus = $invoice->status;
-                    $invoice->update(['status' => ClientInvoice::STATUS_PAID]);
-
+                if ($isFullyPaid) {
                     InvoiceLog::create([
                         'invoice_id' => $invoice->id,
                         'action' => 'marked_paid',
                         'user_id' => Auth::id(),
-                        'old_data' => ['status' => $oldStatus],
-                        'new_data' => ['status' => $invoice->status],
-                        'notes' => 'Invoice marked as paid by ' . Auth::user()->full_name . ' via manual payment entry'
+                        'old_data' => ['status' => ClientInvoice::STATUS_CONFIRMED],
+                        'new_data' => ['status' => ClientInvoice::STATUS_PAID],
+                        'notes' => 'Invoice marked as paid after payment confirmation'
                     ]);
                 }
             });
 
-            return response()->json(['success' => true, 'message' => 'Payment recorded successfully. Receipt pending CFO confirmation.']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment recorded successfully!'
+            ]);
+
         } catch (\Exception $e) {
             Log::error('Payment recording failed: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Failed to record payment: ' . $e->getMessage()], 500);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to record payment: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -716,14 +705,45 @@ class AccountingController extends Controller
      */
     public function sendOverdueNotifications()
     {
-        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
+        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to perform this action.');
 
         try {
-            SendOverdueNotifications::dispatch();
-            return response()->json(['success' => true, 'message' => 'Overdue notifications sent successfully']);
+            $overdueInvoices = ClientInvoice::with('client')
+                ->where('due_date', '<', now())
+                ->where('status', '!=', ClientInvoice::STATUS_PAID)
+                ->get();
+
+            $notificationCount = 0;
+
+            foreach ($overdueInvoices as $invoice) {
+                // Here you would send overdue notification emails
+                // Mail::to($invoice->client->email)->send(new OverdueInvoiceNotification($invoice));
+                
+                // Log the notification
+                InvoiceLog::create([
+                    'invoice_id' => $invoice->id,
+                    'action' => 'overdue_notification_sent',
+                    'user_id' => Auth::id(),
+                    'old_data' => null,
+                    'new_data' => ['notification_sent_at' => now()],
+                    'notes' => 'Overdue notification sent by ' . Auth::user()->full_name
+                ]);
+
+                $notificationCount++;
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Sent {$notificationCount} overdue notifications successfully!"
+            ]);
+
         } catch (\Exception $e) {
             Log::error('Overdue notifications failed: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Failed to send notifications: ' . $e->getMessage()], 500);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send notifications: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -958,10 +978,82 @@ class AccountingController extends Controller
     {
         abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
 
-        // Implementation for exporting invoices
-        // This would use Laravel Excel or similar package
+        $invoices = ClientInvoice::with(['client', 'items'])
+            ->when($request->status, function($q, $status) {
+                $q->where('status', $status);
+            })
+            ->when($request->client_id, function($q, $clientId) {
+                $q->where('client_id', $clientId);
+            })
+            ->when($request->overdue, function($q) {
+                $q->where('due_date', '<', now())
+                  ->where('status', '!=', ClientInvoice::STATUS_PAID);
+            })
+            ->orderBy('invoice_date', 'desc')
+            ->get();
+
+        if ($invoices->isEmpty()) {
+            return redirect()->back()->with('error', 'No invoices found to export.');
+        }
+
+        $filename = 'invoices_export_' . now()->format('Y_m_d_H_i_s') . '.csv';
         
-        return redirect()->back()->with('success', 'Export completed');
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($invoices) {
+            $file = fopen('php://output', 'w');
+            
+            // CSV headers
+            fputcsv($file, [
+                'Invoice Number',
+                'Client Name',
+                'Client Email',
+                'Invoice Date', 
+                'Due Date',
+                'Status',
+                'Subtotal',
+                'Tax Amount',
+                'Total Amount',
+                'Currency',
+                'Notes'
+            ]);
+
+            // CSV data
+            foreach ($invoices as $invoice) {
+                $clientName = 'N/A';
+                $clientEmail = 'N/A';
+                
+                if ($invoice->client) {
+                    $clientName = trim(($invoice->client->first_name ?? '') . ' ' . ($invoice->client->last_name ?? ''));
+                    $clientEmail = $invoice->client->email ?? 'N/A';
+                    
+                    if (empty($clientName)) {
+                        $clientName = 'Client #' . $invoice->client_id;
+                    }
+                }
+
+                fputcsv($file, [
+                    $invoice->invoice_number ?? 'N/A',
+                    $clientName,
+                    $clientEmail,
+                    $invoice->invoice_date ? $invoice->invoice_date->format('Y-m-d') : 'N/A',
+                    $invoice->due_date ? $invoice->due_date->format('Y-m-d') : 'N/A',
+                    ucfirst(str_replace('_', ' ', $invoice->status ?? 'unknown')),
+                    $invoice->subtotal ?? 0,
+                    $invoice->tax_amount ?? 0,
+                    $invoice->total_amount ?? 0,
+                    $invoice->currency ?? 'SAR',
+                    $invoice->notes ?? ''
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**

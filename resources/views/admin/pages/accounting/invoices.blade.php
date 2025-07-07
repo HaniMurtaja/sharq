@@ -129,8 +129,13 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $invoice->client->first_name }} {{ $invoice->client->last_name }}
-                                            <br><small class="text-muted">{{ $invoice->client->email }}</small>
+                                            @if($invoice->client)
+                                                {{ $invoice->client->first_name ?? 'N/A' }} {{ $invoice->client->last_name ?? '' }}
+                                                <br><small class="text-muted">{{ $invoice->client->email ?? 'N/A' }}</small>
+                                            @else
+                                                <span class="text-muted">Client #{{ $invoice->client_id }}</span>
+                                                <br><small class="text-muted">Client not found</small>
+                                            @endif
                                         </td>
                                         <td>{{ $invoice->invoice_date->format('M d, Y') }}</td>
                                         <td>{{ $invoice->due_date->format('M d, Y') }}</td>
