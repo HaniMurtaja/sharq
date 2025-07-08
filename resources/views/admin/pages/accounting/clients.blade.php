@@ -222,9 +222,9 @@
 </div>
 
 <script>
-// Make sure jQuery is loaded and DOM is ready
+// Wait for document ready and ensure jQuery is loaded
 $(document).ready(function() {
-    console.log('DOM ready, initializing accounting client functions...');
+    console.log('Clients page JavaScript initialized');
     
     // Generate client invoice function
     window.generateClientInvoice = function(clientId) {
@@ -304,7 +304,7 @@ $(document).ready(function() {
             fetch(`/admin/accounting/clients/${clientId}/suspend`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                     'Content-Type': 'application/json'
                 }
             })
@@ -330,7 +330,7 @@ $(document).ready(function() {
             fetch(`/admin/accounting/clients/${clientId}/reactivate`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                     'Content-Type': 'application/json'
                 }
             })
@@ -356,7 +356,7 @@ $(document).ready(function() {
             fetch(`/admin/accounting/clients/${clientId}/send-reminder`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                     'Content-Type': 'application/json'
                 }
             })
@@ -369,6 +369,11 @@ $(document).ready(function() {
                 alert('An error occurred. Please try again.');
             });
         }
+    };
+
+    // Generate bulk invoices function
+    window.generateBulkInvoices = function() {
+        $('#generateInvoiceModal').modal('show');
     };
 
     // Handle generate invoice form submission
@@ -384,13 +389,13 @@ $(document).ready(function() {
         submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Generating...').prop('disabled', true);
         
         $.ajax({
-            url: '{{ route("accounting.invoices.generate") }}',
+            url: '/admin/accounting/invoices/generate',
             method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 console.log('Generate invoice response:', response);

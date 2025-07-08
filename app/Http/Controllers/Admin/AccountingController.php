@@ -31,15 +31,16 @@ class AccountingController extends Controller
     protected $pdfService;
     protected $tapService;
 
-    public function __construct(
-        ZatcaQRCodeService $zatcaService, 
-        InvoicePDFService $pdfService,
-        TapPaymentService $tapService = null
-    ) {
-      //   $this->middleware('permission:accounting_access');
-        $this->zatcaService = $zatcaService;
-        $this->pdfService = $pdfService;
-        $this->tapService = $tapService;
+    public function __construct()
+    {
+        // Apply middleware to check accounting access for all methods
+        $this->middleware(function ($request, $next) {
+            if (!auth()->user()->hasPermissionTo('accounting_access')) {
+                // Return 403 with a proper error page or redirect
+                abort(403, 'Access Denied: You do not have permission to access the accounting module. Please contact your administrator if you believe this is an error.');
+            }
+            return $next($request);
+        });
     }
 
     /**
@@ -47,7 +48,6 @@ class AccountingController extends Controller
      */
     public function index()
     {
-        abort_unless(auth()->user()->hasPermissionTo('accounting_access'), 403, 'You do not have permission to view this page.');
 
         // Get statistics
         $stats = [
@@ -75,6 +75,16 @@ class AccountingController extends Controller
         return view('admin.pages.accounting.index', compact('stats', 'recentInvoices', 'overdueAlerts'));
     }
 
+    private function checkAccountingAccess($specificPermission = null)
+    {
+        if (!auth()->user()->hasPermissionTo('accounting_access')) {
+            abort(403, 'Access Denied: You do not have permission to access the accounting module.');
+        }
+        
+        if ($specificPermission && !auth()->user()->hasPermissionTo($specificPermission)) {
+            abort(403, 'Access Denied: You do not have permission to perform this action.');
+        }
+    }
     /**
      * Display list of all clients with their financial data
      * Requirement 2: get all clients with basic data as edit client screen

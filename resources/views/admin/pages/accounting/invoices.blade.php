@@ -390,7 +390,7 @@ $(document).ready(function() {
             fetch(`/admin/accounting/invoices/${invoiceId}/confirm`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                     'Content-Type': 'application/json',
                 }
             })
@@ -418,7 +418,7 @@ $(document).ready(function() {
 
     // Export invoices function
     window.exportInvoices = function() {
-        window.location.href = '{{ route("accounting.invoices.export") }}';
+        window.location.href = '/admin/accounting/invoices/export';
     };
 
     // Handle generate invoice form submission
@@ -434,13 +434,13 @@ $(document).ready(function() {
         submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Generating...').prop('disabled', true);
         
         $.ajax({
-            url: '{{ route("accounting.invoices.generate") }}',
+            url: '/admin/accounting/invoices/generate',
             method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 console.log('Generate invoice response:', response);
@@ -489,7 +489,7 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 console.log('Mark as paid response:', response);

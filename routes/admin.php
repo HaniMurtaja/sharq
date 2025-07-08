@@ -44,46 +44,46 @@ Route::prefix('admin')->group(function () {
         // Accounting routes - Fixed with proper middleware
         Route::prefix('accounting')->name('accounting.')->group(function () {
             // Dashboard
-    Route::get('/', [App\Http\Controllers\Admin\AccountingController::class, 'index'])->name('dashboard');
+            Route::get('/', [App\Http\Controllers\Admin\AccountingController::class, 'index'])->name('dashboard');
     
-    // Clients Management
-    Route::get('/clients', [App\Http\Controllers\Admin\AccountingController::class, 'clients'])->name('clients');
-    Route::get('/clients/{id}/edit', [App\Http\Controllers\Admin\AccountingController::class, 'editClient'])->name('clients.edit');
-    Route::put('/clients/{id}', [App\Http\Controllers\Admin\AccountingController::class, 'updateClient'])->name('clients.update');
-    Route::post('/clients/{id}/suspend', [App\Http\Controllers\Admin\AccountingController::class, 'suspendClient'])->name('clients.suspend');
-    Route::post('/clients/{id}/reactivate', [App\Http\Controllers\Admin\AccountingController::class, 'reactivateClient'])->name('clients.reactivate');
-    Route::get('/clients/{clientId}/invoice-history', [App\Http\Controllers\Admin\AccountingController::class, 'getClientInvoiceHistory'])->name('clients.invoice-history');
-    Route::get('/clients/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportClients'])->name('clients.export');
-    
-    // Invoices Management
-    Route::get('/invoices', [App\Http\Controllers\Admin\AccountingController::class, 'invoices'])->name('invoices');
-    Route::get('/invoices/data', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoicesData'])->name('invoices.data');
-    Route::post('/invoices/generate', [App\Http\Controllers\Admin\AccountingController::class, 'generateMonthlyInvoices'])->name('invoices.generate');
-    Route::get('/invoices/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportInvoices'])->name('invoices.export');
-    Route::get('/invoices/{invoice}', [App\Http\Controllers\Admin\AccountingController::class, 'showInvoice'])->name('invoices.show');
-    Route::get('/invoices/{invoice}/pdf', [App\Http\Controllers\Admin\AccountingController::class, 'downloadInvoicePdf'])->name('invoices.pdf');
-    Route::post('/invoices/{invoice}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmInvoice'])->name('invoices.confirm');
-    Route::post('/invoices/{invoice}/mark-paid', [App\Http\Controllers\Admin\AccountingController::class, 'markInvoiceAsPaid'])->name('invoices.mark-paid');
-    Route::post('/invoices/{id}/resend', [App\Http\Controllers\Admin\AccountingController::class, 'resendInvoice'])->name('invoices.resend');
-    Route::get('/invoices/{id}/logs', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoiceLogs'])->name('invoices.logs');
-    Route::post('/invoices/bulk-actions', [App\Http\Controllers\Admin\AccountingController::class, 'bulkInvoiceActions'])->name('invoices.bulk-actions');
-    
-    Route::post('/clients/{id}/send-reminder', [AccountingController::class, 'sendClientReminder'])->name('clients.send-reminder');
-    // Payment Receipts
-    Route::get('/invoices/{id}/receipts', [App\Http\Controllers\Admin\AccountingController::class, 'getPaymentReceipts'])->name('receipts.get');
-    Route::post('/receipts/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmPaymentReceipt'])->name('receipts.confirm');
-    
-    // Notifications
-    Route::post('/notifications/overdue', [App\Http\Controllers\Admin\AccountingController::class, 'sendOverdueNotifications'])->name('notifications.overdue');
-    
-    // Settings
-    Route::get('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'settings'])->name('settings');
-    Route::put('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'updateSettings'])->name('settings.update');
-    
-    // Reports
-    Route::get('/reports', [App\Http\Controllers\Admin\AccountingController::class, 'getAccountingReports'])->name('reports');
-    Route::get('/dashboard-data', [App\Http\Controllers\Admin\AccountingController::class, 'getDashboardData'])->name('dashboard.data');
-        });
+            // Clients Management
+            Route::get('/clients', [App\Http\Controllers\Admin\AccountingController::class, 'clients'])->name('clients');
+            Route::get('/clients/{id}/edit', [App\Http\Controllers\Admin\AccountingController::class, 'editClient'])->name('clients.edit');
+            Route::put('/clients/{id}', [App\Http\Controllers\Admin\AccountingController::class, 'updateClient'])->name('clients.update');
+            Route::post('/clients/{id}/suspend', [App\Http\Controllers\Admin\AccountingController::class, 'suspendClient'])->name('clients.suspend');
+            Route::post('/clients/{id}/reactivate', [App\Http\Controllers\Admin\AccountingController::class, 'reactivateClient'])->name('clients.reactivate');
+            Route::get('/clients/{clientId}/invoice-history', [App\Http\Controllers\Admin\AccountingController::class, 'getClientInvoiceHistory'])->name('clients.invoice-history');
+            Route::get('/clients/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportClients'])->name('clients.export');
+            Route::post('/clients/{id}/send-reminder', [App\Http\Controllers\Admin\AccountingController::class, 'sendClientReminder'])->name('clients.send-reminder');
+            
+            // Invoices Management
+            Route::get('/invoices', [App\Http\Controllers\Admin\AccountingController::class, 'invoices'])->name('invoices');
+            Route::get('/invoices/data', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoicesData'])->name('invoices.data');
+            Route::post('/invoices/generate', [App\Http\Controllers\Admin\AccountingController::class, 'generateMonthlyInvoices'])->name('invoices.generate');
+            Route::get('/invoices/export', [App\Http\Controllers\Admin\AccountingController::class, 'exportInvoices'])->name('invoices.export');
+            Route::get('/invoices/{invoice}', [App\Http\Controllers\Admin\AccountingController::class, 'showInvoice'])->name('invoices.show');
+            Route::get('/invoices/{invoice}/pdf', [App\Http\Controllers\Admin\AccountingController::class, 'downloadInvoicePdf'])->name('invoices.pdf');
+            Route::post('/invoices/{invoice}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmInvoice'])->name('invoices.confirm');
+            Route::post('/invoices/{invoice}/mark-paid', [App\Http\Controllers\Admin\AccountingController::class, 'markInvoiceAsPaid'])->name('invoices.mark-paid');
+            Route::post('/invoices/{id}/resend', [App\Http\Controllers\Admin\AccountingController::class, 'resendInvoice'])->name('invoices.resend');
+            Route::get('/invoices/{id}/logs', [App\Http\Controllers\Admin\AccountingController::class, 'getInvoiceLogs'])->name('invoices.logs');
+            Route::post('/invoices/bulk-actions', [App\Http\Controllers\Admin\AccountingController::class, 'bulkInvoiceActions'])->name('invoices.bulk-actions');
+            
+            // Payment Receipts
+            Route::get('/invoices/{id}/receipts', [App\Http\Controllers\Admin\AccountingController::class, 'getPaymentReceipts'])->name('receipts.get');
+            Route::post('/receipts/{id}/confirm', [App\Http\Controllers\Admin\AccountingController::class, 'confirmPaymentReceipt'])->name('receipts.confirm');
+            
+            // Notifications
+            Route::post('/notifications/overdue', [App\Http\Controllers\Admin\AccountingController::class, 'sendOverdueNotifications'])->name('notifications.overdue');
+            
+            // Settings
+            Route::get('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'settings'])->name('settings');
+            Route::put('/settings', [App\Http\Controllers\Admin\AccountingController::class, 'updateSettings'])->name('settings.update');
+            
+            // Reports
+            Route::get('/reports', [App\Http\Controllers\Admin\AccountingController::class, 'getAccountingReports'])->name('reports');
+            Route::get('/dashboard-data', [App\Http\Controllers\Admin\AccountingController::class, 'getDashboardData'])->name('dashboard.data');
+});
 
         // Payment gateway routes (outside accounting group)
         Route::post('/payment/invoice/{invoiceId}/tap-callback', [App\Http\Controllers\Admin\AccountingController::class, 'processTapPayment'])->name('payment.tap.callback');

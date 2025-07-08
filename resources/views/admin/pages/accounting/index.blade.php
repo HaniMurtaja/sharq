@@ -287,10 +287,10 @@ $(document).ready(function() {
     // Send overdue notifications function
     window.sendOverdueNotifications = function() {
         if (confirm('Send overdue notifications to all clients with overdue invoices?')) {
-            fetch('{{ route("accounting.notifications.overdue") }}', {
+            fetch('/admin/accounting/notifications/overdue', {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                     'Content-Type': 'application/json',
                 }
             })
@@ -322,13 +322,13 @@ $(document).ready(function() {
         submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Generating...').prop('disabled', true);
         
         $.ajax({
-            url: '{{ route("accounting.invoices.generate") }}',
+            url: '/admin/accounting/invoices/generate',
             method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 console.log('Generate invoice response:', response);
@@ -359,17 +359,8 @@ $(document).ready(function() {
 
     // Load clients for the dropdown when modal is opened
     $('#generateInvoiceModal').on('show.bs.modal', function() {
-        // Load clients dynamically
-        fetch('/admin/accounting/clients')
-            .then(response => response.text())
-            .then(html => {
-                // Extract client data from the response if needed
-                // For now, we'll just leave the dropdown as is
-                console.log('Modal opened, clients could be loaded here');
-            })
-            .catch(error => {
-                console.error('Error loading clients:', error);
-            });
+        // Load clients dynamically if needed
+        console.log('Modal opened, clients could be loaded here');
     });
 });
 </script>

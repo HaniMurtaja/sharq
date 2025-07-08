@@ -97,28 +97,6 @@
         -ms-overflow-style: none;
     }
 
-    /* Accounting dropdown specific styles */
-    .customSidebar .dropdown-menu.accounting-menu {
-        min-width: 180px;
-    }
-
-    .customSidebar .dropdown-menu.accounting-menu .dropdown-item {
-        padding: 8px 12px;
-        font-size: 12px;
-        transition: background-color 0.2s ease;
-    }
-
-    .customSidebar .dropdown-menu.accounting-menu .dropdown-item:hover {
-        background-color: #0b285b !important;
-        color: white;
-    }
-
-    /* Active state for accounting menu items */
-    .customSidebar .dropdown-menu.accounting-menu .dropdown-item.active {
-        background-color: #F46624 !important;
-        color: white;
-    }
-
     #sidebar {
         transition: transform 0.3s ease;
     }
@@ -425,23 +403,6 @@
             background: #0b285b;
         }
 
-        /* Mobile responsiveness for accounting menu */
-        .customSidebar .dropdown-menu.accounting-menu {
-            position: relative !important;
-            top: 0 !important;
-            left: 0 !important;
-            background-color: transparent !important;
-            box-shadow: none !important;
-            border: none;
-            padding: 0;
-        }
-        
-        .customSidebar .dropdown-menu.accounting-menu .dropdown-item {
-            background-color: transparent !important;
-            color: #cbcbcb;
-            padding: 6px 20px;
-        }
-
     }
 
     @media (max-width: 380px) {
@@ -577,7 +538,9 @@
             height="100" />
     </div>
 
+
     <div class="d-flex align-items-center mobileMiniIcons"></div>
+
 </div>
 
 <div class="d-flex flex-column flex-shrink-0 customSidebar rounded-4 bg-sidebar " id="sidebar"
@@ -588,11 +551,28 @@
         title="ALSHROUQ">
         <img src="//alshrouqdelivery.b-cdn.net/public/new/src/assets/images/logo ALSHROUQ DELIVERY white.png"
             alt="ALSHROUQ" width="100" height="100" style="width: 100%; height: 100%; border-radius: 50%;" />
-    </a>
 
+    </a>
+    {{-- @if (auth()->user()->user_role?->value == 1) --}}
     <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
         <li class="nav-item">
             @can('show_dashboard')
+                {{-- <a href="{{ route('dashboard') }}" class="nav-link" aria-current="page" data-bs-toggle="tooltip"
+                    data-bs-placement="right" title="Dashboard">
+                    <svg width="23.6px" height="23.6px" viewBox="0 0 32 32" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M15.3276 2.002C16.676 1.97034 18.0786 2.31338 19.1908 3.09294L27.2376 8.73808L27.2385 8.73876C28.0454 9.30215 28.7246 10.1701 29.2005 11.083C29.6767 11.9963 30 13.0518 30 14.0392V23.5322C30 27.0831 27.1028 30 23.5405 30H8.45953C4.89569 30 2 27.0815 2 23.5192V13.8566C2 12.9302 2.29225 11.9274 2.72172 11.0509C3.15125 10.1744 3.76533 9.32767 4.49918 8.75594L11.5187 3.27919C12.5928 2.44273 13.9791 2.03366 15.3276 2.002Z"
+                            fill="#f9f9f9"></path>
+                        <path
+                            d="M12.424 4.98846L5.956 10.0354C4.876 10.8765 4 12.667 4 14.0248V22.9291C4 25.7169 6.268 28 9.052 28H22.948C25.732 28 28 25.7169 28 22.9411V14.1931C28 12.7391 27.028 10.8765 25.84 10.0474L18.424 4.84426C16.744 3.66664 14.044 3.72673 12.424 4.98846Z"
+                            fill="#F46624"></path>
+                        <path
+                            d="M19.3333 14.3325C18.781 14.3325 18.3333 14.7802 18.3333 15.3325C18.3333 15.8848 18.781 16.3325 19.3333 16.3325H19.5858L16.5554 19.3629L15.0987 17.1778C14.9325 16.9285 14.6633 16.7669 14.3652 16.7374C14.0671 16.7079 13.7714 16.8136 13.5596 17.0254L9.29289 21.2921C8.90237 21.6826 8.90237 22.3158 9.29289 22.7063C9.68342 23.0968 10.3166 23.0968 10.7071 22.7063L14.1112 19.3022L15.568 21.4872C15.7341 21.7365 16.0033 21.8981 16.3015 21.9277C16.5996 21.9572 16.8953 21.8515 17.1071 21.6396L20.9999 17.7468V17.9992C20.9999 18.5515 21.4476 18.9992 21.9999 18.9992C22.5522 18.9992 22.9999 18.5515 22.9999 17.9992V15.3453C23.0007 15.2835 22.9958 15.2216 22.9852 15.1605C22.9797 15.1291 22.9728 15.0982 22.9645 15.0679C22.9202 14.9059 22.8344 14.7527 22.7071 14.6254C22.6021 14.5204 22.4794 14.4436 22.3487 14.395C22.2401 14.3546 22.1226 14.3325 21.9999 14.3325H19.3333Z"
+                            fill="white"></path>
+                    </svg>
+                </a> --}}
+
                 <a href="{{ route('OrderDashboard.dashboard') }}" class="nav-link" aria-current="page"
                     data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
                     <svg width="23.6px" height="23.6px" viewBox="0 0 32 32" fill="none"
@@ -609,8 +589,8 @@
                     </svg>
                 </a>
             @endcan
-        </li>
 
+        </li>
         <li>
             @can('basic_dispatcher_view')
                 <a href="{{ route('index') }}" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right"
@@ -637,7 +617,6 @@
                 </a>
             @endcan
         </li>
-
         <li class="dropdown">
             @can('control_drivers')
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
@@ -654,6 +633,13 @@
                         <path
                             d="M21.8799 5.33398C24.4665 5.33398 26.5465 7.42732 26.5465 10.0007C26.5465 12.5207 24.5465 14.574 22.0532 14.6673C21.9465 14.654 21.8265 14.654 21.7065 14.6673"
                             stroke="#f9f9f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path
+                            d="M5.54695 19.414C2.32029 21.574 2.32029 25.094 5.54695 27.2407C9.21362 29.694 15.227 29.694 18.8936 27.2407C22.1203 25.0807 22.1203 21.5607 18.8936 19.414C15.2403 16.974 9.22695 16.974 5.54695 19.414Z"
+                            fill="#F46624" stroke="#f9f9f9" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                        <path
+                            d="M24.4531 26.666C25.4131 26.466 26.3198 26.0793 27.0665 25.506C29.1465 23.946 29.1465 21.3727 27.0665 19.8127C26.3331 19.2527 25.4398 18.8793 24.4931 18.666"
+                            stroke="#f9f9f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                     <span class="menuMobileItem">Operators</span>
                 </a>
@@ -661,42 +647,15 @@
                 <ul class="dropdown-menu text-small shadow">
                     <li><a class="dropdown-item" href="{{ route('operators') }}">Operators</a></li>
                     <li><a class="dropdown-item" href="{{ route('reports.billings') }}">Operators Billings</a></li>
+
+
                 </ul>
             @endcan
+
         </li>
 
-        <li>
-            @can('control_clients')
-                <a href="{{ route('clientupdated') }}" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right"
-                    title="Clients">
-                    <svg width="23.6px" height="23.6px" viewBox="0 0 32 32" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M4.01343 14.96V20.9466C4.01343 26.9333 6.41343 29.3333 12.4001 29.3333H19.5868C25.5734 29.3333 27.9734 26.9333 27.9734 20.9466V14.96"
-                            stroke="#f9f9f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path
-                            d="M16 16C18.44 16 20.24 14.0133 20 11.5733L19.12 2.66663H12.8933L12 11.5733C11.76 14.0133 13.56 16 16 16Z"
-                            fill="#F46624" stroke="#f9f9f9" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                        <path
-                            d="M24.4133 16C27.1066 16 29.08 13.8133 28.8133 11.1333L28.44 7.46663C27.96 3.99996 26.6267 2.66663 23.1333 2.66663H19.0667L20 12.0133C20.2267 14.2133 22.2133 16 24.4133 16Z"
-                            fill="#F46624" stroke="#f9f9f9" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                        <path
-                            d="M7.51984 16C9.71984 16 11.7065 14.2133 11.9198 12.0133L12.2132 9.06663L12.8532 2.66663H8.78651C5.29318 2.66663 3.95984 3.99996 3.47984 7.46663L3.11984 11.1333C2.85318 13.8133 4.82651 16 7.51984 16Z"
-                            fill="#F46624" stroke="#f9f9f9" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                        <path
-                            d="M16.0001 22.6666C13.7734 22.6666 12.6667 23.7733 12.6667 26V29.3333H19.3334V26C19.3334 23.7733 18.2267 22.6666 16.0001 22.6666Z"
-                            stroke="#f9f9f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </a>
-            @endcan
-        </li>
-
-        <!-- ACCOUNTING MENU ITEM -->
-      
-@can('accounting_access')
+        
+        @can('accounting_access')
 <li class="nav-item">
     <a href="{{ url('/admin/accounting') }}" class="nav-link {{ request()->is('admin/accounting*') ? 'active' : '' }}">
         <i class="nav-icon fas fa-calculator"></i>
