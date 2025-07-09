@@ -5,7 +5,7 @@
 @section('content')
 
 @include('admin.includes.content-header', [
-    'header' => 'Invoices', 
+    'header' => 'Invoices',
     'title' => 'Accounting'
 ])
 
@@ -15,7 +15,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">Invoices</h1>
                 <div>
-                    <button type="button" class="btn btn-primary mr-2" onclick="generateNewInvoice()">
+                    <button type="button" class="btn btn-primary mr-2" data-bs-target="#generateInvoiceModal" data-bs-toggle="modal">
                         <i class="fas fa-plus"></i> Generate New Invoice
                     </button>
                     <button type="button" class="btn btn-outline-secondary" onclick="exportInvoices()">
@@ -171,7 +171,8 @@
                                                     </button>
                                                 @endif
                                                 @if($invoice->status === 'confirmed_sent_unpaid')
-                                                    <button type="button" class="btn btn-outline-warning" onclick="markAsPaid({{ $invoice->id }})">
+                                                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
+                                                    data-bs-target="#markAsPaidModal" data-invoice-id="{{ $invoice->id }}" >
                                                         <i class="fas fa-dollar-sign"></i>
                                                     </button>
                                                 @endif
@@ -197,7 +198,7 @@
                             <i class="fas fa-file-invoice fa-3x text-muted mb-3"></i>
                             <h5>No invoices found yet.</h5>
                             <p class="text-muted">Once you create the invoice tables and models, invoices will appear here.</p>
-                            <button type="button" class="btn btn-primary" onclick="generateNewInvoice()">
+                            <button type="button" class="btn btn-primary" data-bs-target="#generateInvoiceModal" data-bs-toggle="modal">
                                 <i class="fas fa-plus"></i> Generate Your First Invoice
                             </button>
                         </div>
@@ -209,12 +210,14 @@
 </div>
 
 <!-- Generate Invoice Modal -->
-<div class="modal fade" id="generateInvoiceModal" tabindex="-1">
+<div class="modal fade" id="generateInvoiceModal" tabindex="-1" aria-labelledby="generateInvoiceLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Generate New Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal"></button>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <form id="generateInvoiceForm">
                 <div class="modal-body">
@@ -234,7 +237,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Generate Invoice</button>
                 </div>
             </form>
@@ -243,12 +246,14 @@
 </div>
 
 <!-- Mark as Paid Modal -->
-<div class="modal fade" id="markAsPaidModal" tabindex="-1">
+<div class="modal fade" id="markAsPaidModal" tabindex="-1" aria-labelledby="markAsPaidLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Mark as Paid</h5>
-                <button type="button" class="close" data-dismiss="modal"></button>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <form id="markAsPaidForm">
                 <div class="modal-body">
@@ -280,7 +285,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">Mark as Paid</button>
                 </div>
             </form>
@@ -288,101 +293,10 @@
     </div>
 </div>
 
-<!-- Generate Invoice Modal -->
-<div class="modal fade" id="generateInvoiceModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Generate New Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="generateInvoiceForm">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="month">Month</label>
-                        <input type="month" name="month" class="form-control" value="{{ now()->format('Y-m') }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="client_id">Client (Optional)</label>
-                        <select name="client_id" class="form-control">
-                            <option value="">All Clients</option>
-                            @foreach($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->first_name }} {{ $client->last_name }}</option>
-                            @endforeach
-                        </select>
-                        <small class="form-text text-muted">Leave empty to generate for all clients</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Generate Invoice</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Mark as Paid Modal -->
-<div class="modal fade" id="markAsPaidModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Mark as Paid</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="markAsPaidForm">
-                @csrf
-                <div class="modal-body">
-                    <input type="hidden" name="invoice_id" id="paymentInvoiceId">
-                    <div class="form-group">
-                        <label for="payment_method">Payment Method</label>
-                        <select name="payment_method" class="form-control" required>
-                            <option value="bank_transfer">Bank Transfer</option>
-                            <option value="cash">Cash</option>
-                            <option value="tap_gateway">Tap Gateway</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="payment_date">Payment Date</label>
-                        <input type="date" name="payment_date" class="form-control" value="{{ now()->format('Y-m-d') }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="amount_paid">Amount Paid</label>
-                        <input type="number" name="amount_paid" class="form-control" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="transaction_reference">Transaction Reference</label>
-                        <input type="text" name="transaction_reference" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="notes">Notes</label>
-                        <textarea name="notes" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Mark as Paid</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <script>
 $(document).ready(function() {
     console.log('Invoices page DOM ready...');
-
-    // Generate new invoice function
-    window.generateNewInvoice = function() {
-        console.log('Opening generate invoice modal...');
-        $('#generateInvoiceModal').modal('show');
-    };
 
     // Confirm invoice function
     window.confirmInvoice = function(invoiceId) {
@@ -411,10 +325,19 @@ $(document).ready(function() {
     };
 
     // Mark as paid function
-    window.markAsPaid = function(invoiceId) {
-        document.getElementById('paymentInvoiceId').value = invoiceId;
-        $('#markAsPaidModal').modal('show');
-    };
+    // window.markAsPaid = function(invoiceId) {
+    //     document.getElementById('paymentInvoiceId').value = invoiceId;
+    //     $('#markAsPaidModal').modal('show');
+    // };
+
+    $('#markAsPaidModal').on('show.bs.modal', function() {
+        let button = $(event.relatedTarget);
+        let invoiceId = button.data('invoice-id');
+
+        $('#paymentInvoiceId').val(invoiceId);
+
+        console.log('Opening modal for invoice ID:', invoiceId);
+    });
 
     // Export invoices function
     window.exportInvoices = function() {
@@ -425,14 +348,14 @@ $(document).ready(function() {
     $('#generateInvoiceForm').on('submit', function(e) {
         e.preventDefault();
         console.log('Submitting generate invoice form...');
-        
+
         const formData = new FormData(this);
         const submitBtn = $(this).find('button[type="submit"]');
         const originalText = submitBtn.html();
-        
+
         // Show loading state
         submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Generating...').prop('disabled', true);
-        
+
         $.ajax({
             url: '/admin/accounting/invoices/generate',
             method: 'POST',
@@ -446,7 +369,10 @@ $(document).ready(function() {
                 console.log('Generate invoice response:', response);
                 if (response.success) {
                     alert('Invoice generated successfully!');
-                    $('#generateInvoiceModal').modal('hide');
+                    const modalInstance = bootstrap.Modal.getInstance($('#generateInvoiceModal')[0]);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
                     location.reload();
                 } else {
                     alert('Error: ' + response.message);
@@ -455,7 +381,7 @@ $(document).ready(function() {
             error: function(xhr, status, error) {
                 console.error('Generate invoice error:', error);
                 console.error('Response:', xhr.responseText);
-                
+
                 let errorMessage = 'An error occurred while generating the invoice.';
                 if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMessage = xhr.responseJSON.message;
@@ -473,15 +399,15 @@ $(document).ready(function() {
     $('#markAsPaidForm').on('submit', function(e) {
         e.preventDefault();
         console.log('Submitting mark as paid form...');
-        
+
         const formData = new FormData(this);
         const invoiceId = formData.get('invoice_id');
         const submitBtn = $(this).find('button[type="submit"]');
         const originalText = submitBtn.html();
-        
+
         // Show loading state
         submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop('disabled', true);
-        
+
         $.ajax({
             url: `/admin/accounting/invoices/${invoiceId}/mark-paid`,
             method: 'POST',
@@ -495,7 +421,10 @@ $(document).ready(function() {
                 console.log('Mark as paid response:', response);
                 if (response.success) {
                     alert('Payment recorded successfully!');
-                    $('#markAsPaidModal').modal('hide');
+                    const modalInstance = bootstrap.Modal.getInstance($('#markAsPaidModal')[0]);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
                     location.reload();
                 } else {
                     alert('Error: ' + response.message);
@@ -504,7 +433,7 @@ $(document).ready(function() {
             error: function(xhr, status, error) {
                 console.error('Mark as paid error:', error);
                 console.error('Response:', xhr.responseText);
-                
+
                 let errorMessage = 'An error occurred while recording the payment.';
                 if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMessage = xhr.responseJSON.message;

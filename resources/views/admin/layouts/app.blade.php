@@ -43,6 +43,14 @@
         }
     }
 
+    .modal:not(.show){
+        display: none !important;
+    }
+    .modal.show{
+        display: block !important;
+        opacity: 1 !important;
+    }
+
 
 
 

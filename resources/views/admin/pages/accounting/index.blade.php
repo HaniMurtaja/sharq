@@ -5,7 +5,7 @@
 @section('content')
 
 @include('admin.includes.content-header', [
-    'header' => 'Accounting Dashboard', 
+    'header' => 'Accounting Dashboard',
     'title' => 'Accounting'
 ])
 
@@ -179,7 +179,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <button class="btn btn-primary btn-block" onclick="generateInvoice()">
+                            <button type="button" class="btn btn-primary btn-block" data-bs-target="#generateInvoiceModal" data-bs-toggle="modal">
                                 <i class="fas fa-plus"></i> Generate Invoice
                             </button>
                         </div>
@@ -206,12 +206,12 @@
 </div>
 
 <!-- Generate Invoice Modal -->
-<div class="modal fade" id="generateInvoiceModal" tabindex="-1">
+<div class="modal fade" id="generateInvoiceModal" tabindex="-1" aria-labelledby="generateInvoiceLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Generate Invoice</h4>
-                <button type="button" class="close" data-dismiss="modal">
+                <button type="button" class="close" data-bs-dismiss="modal">
                     <span>&times;</span>
                 </button>
             </div>
@@ -231,7 +231,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Generate</button>
                 </div>
             </form>
@@ -239,50 +239,11 @@
     </div>
 </div>
 
-<div class="modal fade" id="generateInvoiceModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Generate Invoice</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="generateInvoiceForm">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="month">Month</label>
-                        <input type="month" name="month" class="form-control" value="{{ now()->format('Y-m') }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="client_id">Client (Optional)</label>
-                        <select name="client_id" class="form-control">
-                            <option value="">All Clients</option>
-                            {{-- Client options will be loaded dynamically --}}
-                        </select>
-                        <small class="form-text text-muted">Leave empty to generate for all clients</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Generate</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 
 <script>
 $(document).ready(function() {
     console.log('Accounting dashboard DOM ready...');
-
-    // Generate invoice function
-    window.generateInvoice = function() {
-        console.log('Opening generate invoice modal...');
-        $('#generateInvoiceModal').modal('show');
-    };
 
     // Send overdue notifications function
     window.sendOverdueNotifications = function() {
@@ -313,14 +274,14 @@ $(document).ready(function() {
     $('#generateInvoiceForm').on('submit', function(e) {
         e.preventDefault();
         console.log('Submitting generate invoice form...');
-        
+
         const formData = new FormData(this);
         const submitBtn = $(this).find('button[type="submit"]');
         const originalText = submitBtn.html();
-        
+
         // Show loading state
         submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Generating...').prop('disabled', true);
-        
+
         $.ajax({
             url: '/admin/accounting/invoices/generate',
             method: 'POST',
@@ -343,7 +304,7 @@ $(document).ready(function() {
             error: function(xhr, status, error) {
                 console.error('Generate invoice error:', error);
                 console.error('Response:', xhr.responseText);
-                
+
                 let errorMessage = 'An error occurred while generating the invoice.';
                 if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMessage = xhr.responseJSON.message;

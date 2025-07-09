@@ -26,7 +26,7 @@ class AccountingController extends Controller
         ClientRepository $clientRepository,
         InvoiceRepository $invoiceRepository
     ) {
-        $this->middleware('accounting');
+        $this->middleware(\App\Http\Middleware\AccountingAccessMiddleware::class);
         $this->accountingService = $accountingService;
         $this->clientRepository = $clientRepository;
         $this->invoiceRepository = $invoiceRepository;
