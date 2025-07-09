@@ -1,4 +1,3 @@
-{{-- resources/views/admin/pages/accounting/clients.blade.php --}}
 @extends('admin.layouts.app')
 
 @section('title', 'Clients Financial Management')
@@ -184,11 +183,16 @@
             <form id="generateInvoiceForm">
                 @csrf
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="invoice_month">Invoice Month</label>
-                        <input type="month" class="form-control" id="invoice_month" name="month" value="{{ date('Y-m') }}" required>
+                    <div class="mb-3">
+                        <label for="invoice_month" class="form-label">Invoice Month</label>
+                        <input type="month" class="form-control" id="invoice_month" name="month" 
+                               value="{{ date('Y-m') }}" max="{{ date('Y-m') }}" required>
                     </div>
                     <input type="hidden" id="selected_client_id" name="client_id">
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Leave client unselected to generate for all clients with uninvoiced orders.
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -212,8 +216,10 @@
             <div class="modal-body">
                 <div id="invoiceHistoryContent">
                     <div class="text-center py-4">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i>
-                        <p>Loading invoice history...</p>
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading invoice history...</p>
                     </div>
                 </div>
             </div>
@@ -221,6 +227,9 @@
     </div>
 </div>
 
+@endsection
+
+@push('scripts')
 <script>
 // Wait for document ready and ensure jQuery is loaded
 $(document).ready(function() {
@@ -265,7 +274,6 @@ $(document).ready(function() {
                 
                 // Monthly breakdown
                 if (data.monthly_breakdown && data.monthly_breakdown.length > 0) {
-                    html += '<div class="col-md-12">';
                     html += '<h6>Monthly Breakdown</h6>';
                     html += '<div class="table-responsive">';
                     html += '<table class="table table-sm">';
@@ -273,18 +281,12 @@ $(document).ready(function() {
                     
                     data.monthly_breakdown.forEach(month => {
                         const paymentRate = month.total_amount > 0 ? (month.paid_amount / month.total_amount * 100).toFixed(1) : '0';
-                        html += `<tr>
-                            <td>${month.month}</td>
-                            <td>${month.invoice_count}</td>
-                            <td>${month.order_count}</td>
-                            <td>${month.total_amount.toLocaleString()} SAR</td>
-                            <td><span class="badge ${month.pending_amount > 0 ? 'badge-warning' : 'badge-success'}">${paymentRate}% Paid</span></td>
-                        </tr>`;
+                        html += '<tr><td>' + month.month + '</td><td>' + month.invoice_count + '</td><td>' + month.order_count + '</td><td>' + month.total_amount.toLocaleString() + ' SAR</td><td><span class="badge ' + (month.pending_amount > 0 ? 'bg-warning' : 'bg-success') + '">' + paymentRate + '% Paid</span></td></tr>';
                     });
                     
                     html += '</tbody></table></div></div>';
                 } else {
-                    html += '<div class="col-md-12"><p class="text-muted">No invoice history found.</p></div>';
+                    html += '<div class="alert alert-info">No invoice history found.</div>';
                 }
                 
                 html += '</div>';
@@ -298,75 +300,59 @@ $(document).ready(function() {
             });
     };
 
-    // Suspend client function
+    // Client action functions
     window.suspendClient = function(clientId) {
-        if (confirm('Are you sure you want to suspend this client account? This will prevent them from placing new orders.')) {
-            fetch(`/admin/accounting/clients/${clientId}/suspend`, {
+        if (confirm('Are you sure you want to suspend this client account?')) {
+            fetch(`{{ route('accounting.clients.suspend', '') }}/${clientId}`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Content-Type': 'application/json'
                 }
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(data.message);
                     location.reload();
                 } else {
                     alert('Error: ' + data.message);
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
             });
         }
     };
 
-    // Reactivate client function
     window.reactivateClient = function(clientId) {
         if (confirm('Are you sure you want to reactivate this client account?')) {
-            fetch(`/admin/accounting/clients/${clientId}/reactivate`, {
+            fetch(`{{ route('accounting.clients.reactivate', '') }}/${clientId}`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Content-Type': 'application/json'
                 }
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(data.message);
                     location.reload();
                 } else {
                     alert('Error: ' + data.message);
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
             });
         }
     };
 
-    // Send invoice reminder function
     window.sendInvoiceReminder = function(clientId) {
-        if (confirm('Send payment reminder to this client for all unpaid invoices?')) {
-            fetch(`/admin/accounting/clients/${clientId}/send-reminder`, {
+        if (confirm('Send payment reminder to this client?')) {
+            fetch(`{{ route('accounting.clients.send-reminder', '') }}/${clientId}`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Content-Type': 'application/json'
                 }
             })
             .then(response => response.json())
             .then(data => {
                 alert(data.message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
             });
         }
     };
@@ -391,9 +377,7 @@ $(document).ready(function() {
         $.ajax({
             url: '/admin/accounting/invoices/generate',
             method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
+            body: formData,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -421,8 +405,26 @@ $(document).ready(function() {
                 // Restore button state
                 submitBtn.html(originalText).prop('disabled', false);
             }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                bootstrap.Modal.getInstance(document.getElementById('generateInvoiceModal')).hide();
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while generating the invoice.');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
         });
     });
 });
 </script>
-@endsection
+@endpush

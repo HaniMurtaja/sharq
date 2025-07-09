@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'AcceptHeader' => HandleApiAcceptHeaderJsonResponse::class,
         'is_online' => \App\Http\Middleware\CheckOnlineOperator::class,
         'LyveMiddleware' => \App\Http\Middleware\LyveMiddleware::class,
+        'accounting' => \App\Http\Middleware\AccountingAccessMiddleware::class,
     ];
 
 }
